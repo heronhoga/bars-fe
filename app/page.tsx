@@ -92,10 +92,10 @@ export default function BarsLanding() {
       <section className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Featured Collaborations
+            Favorite Beats
           </h3>
           <p className="text-gray-400 text-lg">
-            Discover the latest musical creations from our community
+            Discover the most loved musical creations from our community
           </p>
         </div>
 

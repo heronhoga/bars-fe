@@ -3,12 +3,8 @@ import { Beat } from "@/types/beatType";
 export async function getFavoriteBeats(): Promise<Beat[]> {
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/favoritebeats`;
 
-  console.log("Fetching from URL:", url);
-  console.log("Using APP KEY:", process.env.NEXT_PUBLIC_APP_KEY);
-
   try {
     const res = await fetch(url, {
-      cache: 'no-store',
       headers: {
         'Content-Type': 'application/json',
         'app-key': `${process.env.NEXT_PUBLIC_APP_KEY}`,
