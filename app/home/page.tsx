@@ -21,7 +21,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 
 import { BeatFull } from "@/types/beatType";
-import { logout } from "../utils/auth";
 
 // Mock data generator
 const generateMockShowcase = (id: number): BeatFull => {

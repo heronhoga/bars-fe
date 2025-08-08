@@ -10,11 +10,3 @@ export async function storeToken(token: string) {
     maxAge: 60 * 60 * 24 * 7,
   });
 }
-
-export async function getTokenFromCookie() {
-  return (await cookies()).get("token")?.value;
-}
-
-export async function logout() {
-  (await cookies()).delete("token");
-}
