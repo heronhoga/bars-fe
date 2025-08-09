@@ -11,7 +11,6 @@ import {
   User,
   Home,
   Search,
-  Bell,
   Music,
   LogOut,
 } from "lucide-react";
@@ -21,8 +20,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 
 import { BeatFull } from "@/types/beatType";
+import { getAllBeats } from "@/api/getAllBeats";
 
-// Mock data generator
 const generateMockShowcase = (id: number): BeatFull => {
   const artists = [
     "DJ Shadow",
@@ -114,24 +113,8 @@ export default function HomePage() {
   const loadShowcases = async (pageNum: number) => {
     setLoading(true);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    const newShowcases = Array.from({ length: 10 }, (_, i) =>
-      generateMockShowcase((pageNum - 1) * 10 + i + 1)
-    );
-
-    if (pageNum === 1) {
-      setShowcases(newShowcases);
-    } else {
-      setShowcases((prev) => [...prev, ...newShowcases]);
-    }
-
-    // Simulate end of data after 5 pages
-    if (pageNum >= 5) {
-      setHasMore(false);
-    }
-
+    const data = await getAllBeats(pageNum);
+    setShowcases(data);
     setLoading(false);
   };
 
@@ -250,83 +233,27 @@ export default function HomePage() {
                 className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300"
               >
                 <CardContent className="p-6">
-                  {/* Header */}
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center space-x-3">
-                      <Avatar className="h-10 w-10">
-                        <AvatarImage
-                          src={showcase.artistAvatar || "/placeholder.svg"}
-                          alt={showcase.artist}
-                        />
-                        <AvatarFallback className="bg-gradient-to-r from-pink-500 to-purple-600 text-white">
-                          {showcase.artist
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <h3 className="text-white font-semibold">
-                          {showcase.artist}
-                        </h3>
-                        <p className="text-gray-400 text-sm">
-                          {showcase.timestamp}
-                        </p>
-                      </div>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-gray-400 hover:text-white"
-                    >
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </div>
-
                   {/* Content */}
                   <div className="mb-4">
                     <h4 className="text-xl font-bold text-white mb-2">
                       {showcase.title}
                     </h4>
                     <p className="text-gray-300 mb-3">{showcase.description}</p>
+                    <p className="text-gray-300 mb-3">
+                      Uploaded on{" "}
+                      {new Date(showcase.created_at).toLocaleDateString(
+                        "en-US",
+                        {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        }
+                      )}
+                    </p>
 
                     {/* Tags */}
                     <div className="flex flex-wrap gap-2 mb-4">
-                      {showcase.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="px-2 py-1 bg-white/10 rounded-full text-xs text-gray-300"
-                        >
-                          #{tag}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Cover Image */}
-                    <div className="relative mb-4">
-                      <img
-                        src={showcase.coverImage || "/placeholder.svg"}
-                        alt={showcase.title}
-                        className="w-full h-64 object-cover rounded-lg"
-                      />
-                      <div className="absolute inset-0 bg-black/20 rounded-lg flex items-center justify-center">
-                        <Button
-                          size="lg"
-                          onClick={() => togglePlay(showcase.id)}
-                          className="rounded-full w-16 h-16 bg-white/20 backdrop-blur-sm hover:bg-white/30 border border-white/30"
-                        >
-                          {currentlyPlaying === showcase.id ? (
-                            <Pause className="h-8 w-8 text-white" />
-                          ) : (
-                            <Play className="h-8 w-8 text-white ml-1" />
-                          )}
-                        </Button>
-                      </div>
-                      <div className="absolute bottom-4 right-4 bg-black/50 backdrop-blur-sm rounded px-2 py-1">
-                        <span className="text-white text-sm">
-                          {showcase.duration}
-                        </span>
-                      </div>
+                      {showcase.tags}
                     </div>
                   </div>
 
@@ -346,25 +273,7 @@ export default function HomePage() {
                             showcase.isLiked ? "fill-current" : ""
                           }`}
                         />
-                        <span>{showcase.likes.toLocaleString()}</span>
-                      </Button>
-
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="flex items-center space-x-2 text-gray-400 hover:text-white"
-                      >
-                        <MessageCircle className="h-5 w-5" />
-                        <span>{showcase.comments}</span>
-                      </Button>
-
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="flex items-center space-x-2 text-gray-400 hover:text-white"
-                      >
-                        <Share2 className="h-5 w-5" />
-                        <span>{showcase.shares}</span>
+                        <span>{showcase.likes}</span>
                       </Button>
                     </div>
                   </div>
