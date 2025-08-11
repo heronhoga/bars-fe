@@ -226,21 +226,41 @@ export default function HomePage() {
           </div>
 
           {/* Timeline */}
-          <div className="space-y-6">
+          <div className="space-y-8">
             {showcases.map((showcase) => (
               <Card
                 key={showcase.id}
-                className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300"
+                className="bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all duration-300 shadow-lg rounded-2xl"
               >
-                <CardContent className="p-6">
-                  {/* Content */}
-                  <div className="mb-4">
-                    <h4 className="text-xl font-bold text-white mb-2">
+                <CardContent className="p-6 space-y-4">
+                  {/* Title & Description */}
+                  <div>
+                    <h4 className="text-2xl font-bold text-white mb-2">
                       {showcase.title}
                     </h4>
-                    <p className="text-gray-300 mb-3">{showcase.description}</p>
-                    <p className="text-gray-300 mb-3">
-                      Uploaded on{" "}
+                    <p className="text-gray-300 leading-relaxed">
+                      {showcase.description}
+                    </p>
+                  </div>
+
+                  {/* Username */}
+                  <div className="flex items-center gap-2">
+                    <span className="px-3 py-1 rounded-full bg-white/10 border border-white/20 text-sm font-medium">
+                      <Link
+                        href={`https://discordapp.com/users/${showcase.username}`}
+                        className="text-indigo-300 hover:text-indigo-200 transition"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {showcase.username}
+                      </Link>
+                    </span>
+                  </div>
+
+                  {/* Upload date */}
+                  <p className="text-gray-400 text-sm">
+                    Uploaded on{" "}
+                    <span className="font-medium">
                       {new Date(showcase.created_at).toLocaleDateString(
                         "en-US",
                         {
@@ -249,33 +269,40 @@ export default function HomePage() {
                           day: "numeric",
                         }
                       )}
-                    </p>
+                    </span>
+                  </p>
 
-                    {/* Tags */}
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {showcase.tags}
+                  {/* Tags */}
+                  {showcase.tags && (
+                    <div className="flex flex-wrap gap-2">
+                      {showcase.tags.split(",").map((tag, index) => (
+                        <span
+                          key={index}
+                          className="px-3 py-1 rounded-full bg-pink-400/10 text-pink-300 text-xs font-medium border border-pink-400/20"
+                        >
+                          #{tag.trim()}
+                        </span>
+                      ))}
                     </div>
-                  </div>
+                  )}
 
                   {/* Actions */}
                   <div className="flex items-center justify-between pt-4 border-t border-white/10">
-                    <div className="flex items-center space-x-6">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => toggleLike(showcase.id)}
-                        className={`flex items-center space-x-2 ${
-                          showcase.isLiked ? "text-pink-400" : "text-gray-400"
-                        } hover:text-pink-400`}
-                      >
-                        <Heart
-                          className={`h-5 w-5 ${
-                            showcase.isLiked ? "fill-current" : ""
-                          }`}
-                        />
-                        <span>{showcase.likes}</span>
-                      </Button>
-                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => toggleLike(showcase.id)}
+                      className={`flex items-center space-x-2 ${
+                        showcase.isLiked ? "text-pink-400" : "text-gray-400"
+                      } hover:text-pink-400 transition`}
+                    >
+                      <Heart
+                        className={`h-5 w-5 ${
+                          showcase.isLiked ? "fill-current" : ""
+                        }`}
+                      />
+                      <span>{showcase.likes}</span>
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
