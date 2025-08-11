@@ -17,4 +17,5 @@ export interface BeatFull {
   file_size: number;
   created_at: string;
   likes: number;
+  is_liked: string;
 }

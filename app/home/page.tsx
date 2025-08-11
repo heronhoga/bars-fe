@@ -22,82 +22,6 @@ import Link from "next/link";
 import { BeatFull } from "@/types/beatType";
 import { getAllBeats } from "@/api/getAllBeats";
 
-const generateMockShowcase = (id: number): BeatFull => {
-  const artists = [
-    "DJ Shadow",
-    "MC Flow",
-    "BeatMaker Pro",
-    "Lyrical Genius",
-    "SynthWave Collective",
-    "Wordsmith",
-    "The Producer",
-    "Code Beats",
-    "Vocal Harmony",
-    "Bass Master",
-    "Rhythm King",
-    "Melody Queen",
-    "Sound Engineer",
-    "Mix Master",
-    "Beat Creator",
-  ];
-
-  const titles = [
-    "Midnight Vibes",
-    "Urban Symphony",
-    "Neon Dreams",
-    "Street Poetry",
-    "Digital Harmony",
-    "Electric Pulse",
-    "Cosmic Beats",
-    "Underground Flow",
-    "Stellar Sounds",
-    "Rhythm Revolution",
-    "Sonic Waves",
-    "Beat Laboratory",
-    "Musical Journey",
-    "Sound Fusion",
-    "Harmony Heights",
-  ];
-
-  const tags = [
-    "Hip-Hop",
-    "Electronic",
-    "R&B",
-    "Pop",
-    "Jazz",
-    "Rock",
-    "Ambient",
-    "Trap",
-    "House",
-    "Techno",
-  ];
-
-  const artist = artists[Math.floor(Math.random() * artists.length)];
-  const title = titles[Math.floor(Math.random() * titles.length)];
-
-  return {
-    id,
-    title,
-    artist,
-    artistAvatar: `/placeholder.svg?height=40&width=40&query=${artist.replace(
-      " ",
-      "+"
-    )}+avatar`,
-    likes: Math.floor(Math.random() * 5000) + 100,
-    duration: `${Math.floor(Math.random() * 3) + 2}:${String(
-      Math.floor(Math.random() * 60)
-    ).padStart(2, "0")}`,
-    audioUrl: "/placeholder-audio.mp3",
-    coverImage: `/placeholder.svg?height=300&width=300&query=${title.replace(
-      " ",
-      "+"
-    )}+music+cover`,
-    timestamp: `${Math.floor(Math.random() * 24) + 1}h ago`,
-    description: `New collaboration featuring ${artist}. This track blends modern beats with classic vibes.`,
-    tags: tags.slice(0, Math.floor(Math.random() * 3) + 1),
-  };
-};
-
 export default function HomePage() {
   const [showcases, setShowcases] = useState<BeatFull[]>([]);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null);
@@ -146,14 +70,14 @@ export default function HomePage() {
     }
   };
 
-  const toggleLike = (id: number) => {
+  const toggleLike = (id: string) => {
     setShowcases((prev) =>
       prev.map((showcase) =>
         showcase.id === id
           ? {
               ...showcase,
-              isLiked: !showcase.isLiked,
-              likes: showcase.isLiked ? showcase.likes - 1 : showcase.likes + 1,
+              isLiked: !showcase.is_liked,
+              likes: showcase.is_liked ? showcase.likes - 1 : showcase.likes + 1,
             }
           : showcase
       )
@@ -293,12 +217,12 @@ export default function HomePage() {
                       size="sm"
                       onClick={() => toggleLike(showcase.id)}
                       className={`flex items-center space-x-2 ${
-                        showcase.isLiked ? "text-pink-400" : "text-gray-400"
+                        showcase.is_liked ? "text-pink-400" : "text-gray-400"
                       } hover:text-pink-400 transition`}
                     >
                       <Heart
                         className={`h-5 w-5 ${
-                          showcase.isLiked ? "fill-current" : ""
+                          showcase.is_liked ? "fill-current" : ""
                         }`}
                       />
                       <span>{showcase.likes}</span>
