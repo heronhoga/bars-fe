@@ -92,17 +92,18 @@ export default function HomePage() {
 
     if (res.message) {
       setShowcases((prev) =>
-        prev.map((showcase) =>
-          showcase.id === id
-            ? {
-                ...showcase,
-                isLiked: !Boolean(Number(showcase.is_liked)),
-                likes: Boolean(Number(showcase.is_liked))
-                  ? showcase.likes - 1
-                  : showcase.likes + 1,
-              }
-            : showcase
-        )
+        prev.map((showcase) => {
+          if (showcase.id !== id) return showcase;
+
+          return {
+            ...showcase,
+            is_liked: res.message === "Like added" ? "1" : "0",
+            likes:
+              res.message === "Like added"
+                ? showcase.likes + 1
+                : showcase.likes - 1,
+          };
+        })
       );
     }
   };
