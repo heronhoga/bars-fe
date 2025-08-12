@@ -92,8 +92,8 @@ export default function HomePage() {
         showcase.id === id
           ? {
               ...showcase,
-              isLiked: !showcase.is_liked,
-              likes: showcase.is_liked
+              isLiked: !Boolean(Number(showcase.is_liked)),
+              likes: Boolean(Number(showcase.is_liked))
                 ? showcase.likes - 1
                 : showcase.likes + 1,
             }
@@ -248,7 +248,9 @@ export default function HomePage() {
                     >
                       <Heart
                         className={`h-5 w-5 ${
-                          showcase.is_liked ? "fill-current" : ""
+                          Boolean(Number(showcase.is_liked))
+                            ? "fill-current"
+                            : ""
                         }`}
                       />
                       <span>{showcase.likes}</span>
