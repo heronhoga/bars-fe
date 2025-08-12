@@ -24,10 +24,12 @@ import { getAllBeats } from "@/api/getAllBeats";
 
 export default function HomePage() {
   const [showcases, setShowcases] = useState<BeatFull[]>([]);
-  const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null);
+  const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
+
+  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
 
   // Load initial data
   useEffect(() => {
@@ -62,10 +64,24 @@ export default function HomePage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
-  const togglePlay = (id: number) => {
-    if (currentlyPlaying === id) {
+  const togglePlay = (id: string, fileUrl: string) => {
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+      setAudio(null);
       setCurrentlyPlaying(null);
-    } else {
+    }
+
+    if (currentlyPlaying !== id) {
+      const newAudio = new Audio(fileUrl);
+      newAudio.play();
+
+      newAudio.onended = () => {
+        setCurrentlyPlaying(null);
+        setAudio(null);
+      };
+
+      setAudio(newAudio);
       setCurrentlyPlaying(id);
     }
   };
@@ -77,7 +93,9 @@ export default function HomePage() {
           ? {
               ...showcase,
               isLiked: !showcase.is_liked,
-              likes: showcase.is_liked ? showcase.likes - 1 : showcase.likes + 1,
+              likes: showcase.is_liked
+                ? showcase.likes - 1
+                : showcase.likes + 1,
             }
           : showcase
       )
@@ -157,6 +175,18 @@ export default function HomePage() {
                 className="bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all duration-300 shadow-lg rounded-2xl"
               >
                 <CardContent className="p-6 space-y-4">
+                  {/* demo */}
+                  <Button
+                    size="sm"
+                    onClick={() => togglePlay(showcase.id, showcase.file_url)}
+                    className="rounded-full w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
+                  >
+                    {currentlyPlaying === showcase.id ? (
+                      <Pause className="h-5 w-5" />
+                    ) : (
+                      <Play className="h-5 w-5 ml-0.5" />
+                    )}
+                  </Button>
                   {/* Title & Description */}
                   <div>
                     <h4 className="text-2xl font-bold text-white mb-2">
@@ -166,7 +196,6 @@ export default function HomePage() {
                       {showcase.description}
                     </p>
                   </div>
-
                   {/* Username */}
                   <div className="flex items-center gap-2">
                     <span className="px-3 py-1 rounded-full bg-white/10 border border-white/20 text-sm font-medium">
@@ -180,7 +209,6 @@ export default function HomePage() {
                       </Link>
                     </span>
                   </div>
-
                   {/* Upload date */}
                   <p className="text-gray-400 text-sm">
                     Uploaded on{" "}
@@ -195,7 +223,6 @@ export default function HomePage() {
                       )}
                     </span>
                   </p>
-
                   {/* Tags */}
                   {showcase.tags && (
                     <div className="flex flex-wrap gap-2">
@@ -209,7 +236,6 @@ export default function HomePage() {
                       ))}
                     </div>
                   )}
-
                   {/* Actions */}
                   <div className="flex items-center justify-between pt-4 border-t border-white/10">
                     <Button
