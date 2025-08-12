@@ -21,6 +21,7 @@ import Link from "next/link";
 
 import { BeatFull } from "@/types/beatType";
 import { getAllBeats } from "@/api/getAllBeats";
+import { likeBeat } from "@/api/likeBeat";
 
 export default function HomePage() {
   const [showcases, setShowcases] = useState<BeatFull[]>([]);
@@ -86,20 +87,24 @@ export default function HomePage() {
     }
   };
 
-  const toggleLike = (id: string) => {
-    setShowcases((prev) =>
-      prev.map((showcase) =>
-        showcase.id === id
-          ? {
-              ...showcase,
-              isLiked: !Boolean(Number(showcase.is_liked)),
-              likes: Boolean(Number(showcase.is_liked))
-                ? showcase.likes - 1
-                : showcase.likes + 1,
-            }
-          : showcase
-      )
-    );
+  const toggleLike = async (id: string) => {
+    const res = await likeBeat(id);
+
+    if (res.message) {
+      setShowcases((prev) =>
+        prev.map((showcase) =>
+          showcase.id === id
+            ? {
+                ...showcase,
+                isLiked: !Boolean(Number(showcase.is_liked)),
+                likes: Boolean(Number(showcase.is_liked))
+                  ? showcase.likes - 1
+                  : showcase.likes + 1,
+              }
+            : showcase
+        )
+      );
+    }
   };
 
   const handleLogout = async () => {
