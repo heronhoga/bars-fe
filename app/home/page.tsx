@@ -5,9 +5,7 @@ import {
   Play,
   Pause,
   Heart,
-  MessageCircle,
-  Share2,
-  MoreHorizontal,
+  Plus,
   User,
   Home,
   Search,
@@ -16,7 +14,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 
 import { BeatFull } from "@/types/beatType";
@@ -294,6 +291,15 @@ export default function HomePage() {
           )}
         </div>
       </main>
+
+      <Link href="/upload">
+        <Button
+          size="lg"
+          className="fixed bottom-8 right-8 rounded-full w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 z-40"
+        >
+          <Plus className="h-8 w-8" />
+        </Button>
+      </Link>
     </div>
   );
 }
