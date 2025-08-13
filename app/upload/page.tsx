@@ -13,6 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import Link from "next/link"
 import { CustomAlert, type AlertType } from "@/components/custom-alert"
 import { useRouter } from "next/navigation"
+import { AlertState } from "@/types/alertType"
+import { UploadFormData, UploadFormErrors } from "@/types/uploadType"
 
 const genres = [
   "Hip-Hop",
@@ -32,32 +34,8 @@ const genres = [
   "Other",
 ]
 
-interface FormData {
-  title: string
-  description: string
-  genre: string
-  tags: string
-  file: File | null
-}
-
-interface FormErrors {
-  title?: string
-  description?: string
-  genre?: string
-  tags?: string
-  file?: string
-}
-
-interface AlertState {
-  isOpen: boolean
-  type: AlertType
-  title: string
-  message: string
-  confirmText?: string
-}
-
 export default function UploadPage() {
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<UploadFormData>({
     title: "",
     description: "",
     genre: "",
@@ -65,7 +43,7 @@ export default function UploadPage() {
     file: null,
   })
 
-  const [errors, setErrors] = useState<FormErrors>({})
+  const [errors, setErrors] = useState<UploadFormErrors>({})
   const [isLoading, setIsLoading] = useState(false)
   const [isDragOver, setIsDragOver] = useState(false)
   const [audioPreview, setAudioPreview] = useState<HTMLAudioElement | null>(null)
@@ -81,7 +59,7 @@ export default function UploadPage() {
   const router = useRouter()
 
   const validateForm = (): boolean => {
-    const newErrors: FormErrors = {}
+    const newErrors: UploadFormErrors = {}
 
     // Title validation
     if (!formData.title.trim()) {
@@ -130,7 +108,7 @@ export default function UploadPage() {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleInputChange = (field: keyof Omit<FormData, "file">, value: string) => {
+  const handleInputChange = (field: keyof Omit<UploadFormData, "file">, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
 
     // Clear error when user starts typing
