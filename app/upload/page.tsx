@@ -30,6 +30,7 @@ import { CustomAlert, type AlertType } from "@/components/custom-alert";
 import { useRouter } from "next/navigation";
 import { AlertState } from "@/types/alertType";
 import { UploadFormData, UploadFormErrors } from "@/types/uploadType";
+import { createNewBeat } from "@/api/createNewBeat";
 
 const genres = [
   "Hip-Hop",
@@ -229,7 +230,6 @@ export default function UploadPage() {
   const handleAlertClose = () => {
     setAlert((prev) => ({ ...prev, isOpen: false }));
 
-    // If it was a success alert, redirect to home
     if (alert.type === "success") {
       setTimeout(() => {
         router.push("/home");
@@ -257,13 +257,11 @@ export default function UploadPage() {
         uploadData.append("file", formData.file);
       }
 
-      // Simulate API call - replace with your actual upload endpoint
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      const res = await createNewBeat(uploadData);
 
-      // Simulate success/failure for demo
-      const isSuccess = Math.random() > 0.2; // 80% success rate
+      console.log(res);
 
-      if (isSuccess) {
+      if (res.message == "New Beat successfully created") {
         showAlert(
           "success",
           "Beat Uploaded Successfully!",
@@ -327,7 +325,7 @@ export default function UploadPage() {
             <Music className="h-8 w-8 text-white" />
             <h1 className="text-2xl font-bold text-white">BARS</h1>
           </div>
-          <div className="w-24"></div> {/* Spacer for centering */}
+          <div className="w-24"></div>
         </nav>
       </header>
 
@@ -423,7 +421,7 @@ export default function UploadPage() {
                         </Button>
                       </div>
                       <p className="text-gray-500 text-xs">
-                        Supported formats: MP3(Max 5MB)
+                        Supported formats: MP3 (Max 5MB)
                       </p>
                     </div>
                   )}
@@ -431,7 +429,7 @@ export default function UploadPage() {
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept="audio/*"
+                  accept="audio/mpeg"
                   onChange={handleFileInputChange}
                   className="hidden"
                 />
