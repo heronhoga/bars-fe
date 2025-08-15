@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { BeatFull } from "@/types/beatType";
 
 export async function getAllBeats(pageNum: number): Promise<BeatFull[]> {
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/beat`;
+  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/beat?page=${pageNum}`;
 
   const token = (await cookies()).get("token")?.value;
   try {
@@ -21,6 +21,7 @@ export async function getAllBeats(pageNum: number): Promise<BeatFull[]> {
     }
 
     const result = await res.json();
+    console.log(result)
 
     if (!Array.isArray(result.data)) {
       throw new Error("Invalid response format");

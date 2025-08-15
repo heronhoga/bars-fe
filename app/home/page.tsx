@@ -36,9 +36,18 @@ export default function HomePage() {
 
   const loadShowcases = async (pageNum: number) => {
     setLoading(true);
+    try {
+      const data = await getAllBeats(pageNum);
 
-    const data = await getAllBeats(pageNum);
-    setShowcases(data);
+      if (data.length === 0) {
+        setHasMore(false);
+      } else {
+        setShowcases((prev) => [...prev, ...data]);
+      }
+    } catch (error) {
+      console.error("Error loading showcases:", error);
+      setHasMore(false);
+    }
     setLoading(false);
   };
 
