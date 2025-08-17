@@ -14,14 +14,24 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { getProfileInfo } from "@/api/getProfileInfo";
+import { Profile } from "@/types/profileType";
 
 export default function ProfilePage() {
-  const userStats = {
-    followers: 1247,
-    following: 892,
-    tracks: 23,
-    likes: 5634,
-  };
+  const [profile, setProfile] = useState<Profile>();
+  useEffect(() => {
+    const fetchBeats = async () => {
+      try {
+        const data = await getProfileInfo();
+        setProfile(data);
+      } catch (error) {
+        console.error("Failed to fetch beats:", error);
+      }
+    };
+
+    fetchBeats();
+  }, []);
 
   const recentTracks = [
     { id: 1, title: "Midnight Vibes", plays: 1247, likes: 89 },
@@ -68,32 +78,34 @@ export default function ProfilePage() {
               </Avatar>
 
               <div className="flex-1 text-center md:text-left">
-                <h2 className="text-3xl font-bold text-white mb-2">John Doe</h2>
+                <h2 className="text-3xl font-bold text-white mb-2">
+                  {profile?.username}
+                </h2>
 
                 <div className="flex justify-center md:justify-start space-x-8 mb-4">
                   <div className="text-center">
                     <div className="text-2xl font-bold text-white">
-                      {userStats.tracks}
+                      {profile?.tracks}
                     </div>
                     <div className="text-gray-400 text-sm">Tracks</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-white">
-                      {userStats.followers.toLocaleString()}
-                    </div>
-                    <div className="text-gray-400 text-sm">Followers</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-white">
-                      {userStats.following}
-                    </div>
-                    <div className="text-gray-400 text-sm">Following</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-white">
-                      {userStats.likes.toLocaleString()}
+                      {profile?.likes}
                     </div>
                     <div className="text-gray-400 text-sm">Likes</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-white">
+                      {profile?.region}
+                    </div>
+                    <div className="text-gray-400 text-sm">Region</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-white">
+                      {profile?.discord}
+                    </div>
+                    <div className="text-gray-400 text-sm">Discord</div>
                   </div>
                 </div>
 
