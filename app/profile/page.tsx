@@ -9,6 +9,7 @@ import {
   Heart,
   Play,
   Trash,
+  Pause
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -30,9 +31,11 @@ export default function ProfilePage() {
   const [likedPage, setLikedPage] = useState(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [likedTotalPages, setLikedTotalPages] = useState<number>(1);
+  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+  const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
 
+  //fetch profile information
   useEffect(() => {
-    //fetch profile information
     const fetchProfile = async () => {
       try {
         const data = await getProfileInfo();
@@ -83,6 +86,28 @@ export default function ProfilePage() {
   const handleDelete = (id: string) => {
     console.log("Delete track:", id);
     // API call to delete track
+  };
+
+  const togglePlay = (id: string, fileUrl: string) => {
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+      setAudio(null);
+      setCurrentlyPlaying(null);
+    }
+
+    if (currentlyPlaying !== id) {
+      const newAudio = new Audio(fileUrl);
+      newAudio.play();
+
+      newAudio.onended = () => {
+        setCurrentlyPlaying(null);
+        setAudio(null);
+      };
+
+      setAudio(newAudio);
+      setCurrentlyPlaying(id);
+    }
   };
 
   return (
@@ -202,9 +227,16 @@ export default function ProfilePage() {
                     <div className="flex items-center space-x-4">
                       <Button
                         size="sm"
-                        className="rounded-full w-10 h-10 bg-gradient-to-r from-pink-500 to-purple-600"
+                        onClick={() =>
+                          togglePlay(track.id, track.file_url)
+                        }
+                        className="rounded-full w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
                       >
-                        <Play className="h-4 w-4" />
+                        {currentlyPlaying === track.id ? (
+                          <Pause className="h-5 w-5" />
+                        ) : (
+                          <Play className="h-5 w-5 ml-0.5" />
+                        )}
                       </Button>
                       <div>
                         <h4 className="text-white font-semibold">
