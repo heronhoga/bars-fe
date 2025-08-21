@@ -288,9 +288,7 @@ export default function HomePage() {
               </p>
               <Button
                 onClick={() => {
-                  setPage(1);
-                  setHasMore(true);
-                  loadShowcases(1);
+                  window.location.href = "/home"
                 }}
                 className="mt-4 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
               >
