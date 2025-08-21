@@ -9,7 +9,7 @@ import {
   Heart,
   Play,
   Trash,
-  Pause
+  Pause,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -227,9 +227,7 @@ export default function ProfilePage() {
                     <div className="flex items-center space-x-4">
                       <Button
                         size="sm"
-                        onClick={() =>
-                          togglePlay(track.id, track.file_url)
-                        }
+                        onClick={() => togglePlay(track.id, track.file_url)}
                         className="rounded-full w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
                       >
                         {currentlyPlaying === track.id ? (
@@ -309,9 +307,14 @@ export default function ProfilePage() {
                         <div className="flex items-center space-x-4">
                           <Button
                             size="sm"
-                            className="rounded-full w-10 h-10 bg-gradient-to-r from-pink-500 to-purple-600"
+                            onClick={() => togglePlay(track.id, track.file_url)}
+                            className="rounded-full w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
                           >
-                            <Play className="h-4 w-4" />
+                            {currentlyPlaying === track.id ? (
+                              <Pause className="h-5 w-5" />
+                            ) : (
+                              <Play className="h-5 w-5 ml-0.5" />
+                            )}
                           </Button>
                           <div>
                             <h4 className="text-white font-semibold">
