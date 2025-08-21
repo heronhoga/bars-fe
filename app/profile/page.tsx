@@ -20,13 +20,16 @@ import { getProfileInfo } from "@/api/getProfileInfo";
 import { Profile } from "@/types/profileType";
 import { BeatByUser } from "@/types/beatType";
 import { getBeatByUser } from "@/api/getBeatByUser";
+import { getLikedBeatByUser } from "@/api/getLikedBeatByUser";
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<Profile>();
   const [myBeats, setMyBeats] = useState<BeatByUser[]>();
+  const [likedBeats, setLikedBeats] = useState<BeatByUser[]>();
   const [beatPage, setBeatPage] = useState(1);
   const [likedPage, setLikedPage] = useState(1);
-const [totalPages, setTotalPages] = useState<number | undefined>(undefined);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [likedTotalPages, setLikedTotalPages] = useState<number>(1);
 
   useEffect(() => {
     //fetch profile information
@@ -42,12 +45,11 @@ const [totalPages, setTotalPages] = useState<number | undefined>(undefined);
     fetchProfile();
   }, [beatPage]);
 
+  //fetch account owned beats
   useEffect(() => {
-    //fetch account owned beats
     const fetchMyBeats = async () => {
       try {
         const response = await getBeatByUser(beatPage);
-        console.log(response.data);
         setMyBeats(response.data);
         setTotalPages(response.totalPages);
       } catch (error) {
@@ -57,13 +59,21 @@ const [totalPages, setTotalPages] = useState<number | undefined>(undefined);
     fetchMyBeats();
   }, [beatPage]);
 
-  const likedTracks = [
-    { id: 10, title: "Chill Beats", plays: 778, likes: 55 },
-    { id: 11, title: "Lo-Fi Study", plays: 1842, likes: 145 },
-    { id: 12, title: "Dreamscape", plays: 992, likes: 72 },
-  ];
+  //fetch liked beats by users
+  useEffect(() => {
+    const fetchLikedBeats = async () => {
+      try {
+        const response = await getLikedBeatByUser(likedPage);
+        console.log(response.data);
+        setLikedBeats(response.data);
+        setLikedTotalPages(response.totalPages);
+      } catch (error) {
+        console.error("Failed to fetch beats:", error);
+      }
+    };
 
-  // const totalLikedPages = Math.ceil(likedTracks.length / pageSizes);
+    fetchLikedBeats();
+  }, [likedPage]);
 
   const handleEdit = (id: string) => {
     console.log("Edit track:", id);
@@ -254,10 +264,10 @@ const [totalPages, setTotalPages] = useState<number | undefined>(undefined);
           </TabsContent>
 
           {/* Liked Tracks */}
-          {/* <TabsContent value="liked" className="space-y-4">
-            {paginatedLiked.length > 0 ? (
+          <TabsContent value="liked" className="space-y-4">
+            {likedTotalPages > 0 ? (
               <>
-                {paginatedLiked.map((track) => (
+                {likedBeats?.map((track) => (
                   <Card
                     key={track.id}
                     className="bg-white/10 backdrop-blur-sm border-white/20"
@@ -276,7 +286,7 @@ const [totalPages, setTotalPages] = useState<number | undefined>(undefined);
                               {track.title}
                             </h4>
                             <p className="text-gray-400 text-sm">
-                              {track.plays} plays
+                              {track.description} plays
                             </p>
                           </div>
                         </div>
@@ -290,7 +300,7 @@ const [totalPages, setTotalPages] = useState<number | undefined>(undefined);
                 ))}
 
                 {/* Pagination */}
-          {/* <div className="flex justify-between mt-4">
+                <div className="flex justify-between mt-4">
                   <Button
                     variant="outline"
                     disabled={likedPage === 1}
@@ -299,19 +309,19 @@ const [totalPages, setTotalPages] = useState<number | undefined>(undefined);
                     Previous
                   </Button>
                   <span className="text-white">
-                    Page {likedPage} of {totalLikedPages}
+                    Page {likedPage} of {likedTotalPages}
                   </span>
                   <Button
                     variant="outline"
-                    disabled={likedPage === totalLikedPages}
+                    disabled={likedPage === likedTotalPages}
                     onClick={() => setLikedPage((p) => p + 1)}
                   >
                     Next
                   </Button>
-                </div> */}
-          {/* </>
-            ) : ( */}
-          {/* <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                </div>
+              </>
+            ) : (
+              <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                 <CardContent className="p-8 text-center">
                   <Heart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                   <p className="text-gray-400">
@@ -320,7 +330,7 @@ const [totalPages, setTotalPages] = useState<number | undefined>(undefined);
                 </CardContent>
               </Card>
             )}
-          </TabsContent> */}
+          </TabsContent>
         </Tabs>
       </main>
     </div>
