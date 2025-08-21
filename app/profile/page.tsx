@@ -237,12 +237,37 @@ export default function ProfilePage() {
                         )}
                       </Button>
                       <div>
-                        <h4 className="text-white font-semibold">
+                        {/* Title */}
+                        <h4 className="text-2xl font-bold text-white mb-2">
                           {track.title}
                         </h4>
-                        <p className="text-gray-400 text-sm">
+
+                        {/* Description */}
+                        <p className="text-gray-300 leading-relaxed mb-2">
                           {track.description}
                         </p>
+
+                        {/* Genre */}
+                        {track.genre && (
+                          <p className="text-gray-400 text-sm mb-2">
+                            <span className="font-medium">Genre:</span>{" "}
+                            {track.genre}
+                          </p>
+                        )}
+
+                        {/* Tags */}
+                        {track.tags && (
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            {track.tags.split(",").map((tag, index) => (
+                              <span
+                                key={index}
+                                className="px-3 py-1 rounded-full bg-pink-400/10 text-pink-300 text-xs font-medium border border-pink-400/20"
+                              >
+                                #{tag.trim()}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -317,12 +342,37 @@ export default function ProfilePage() {
                             )}
                           </Button>
                           <div>
-                            <h4 className="text-white font-semibold">
+                            {/* Title */}
+                            <h4 className="text-2xl font-bold text-white mb-2">
                               {track.title}
                             </h4>
-                            <p className="text-gray-400 text-sm">
-                              {track.description} plays
+
+                            {/* Description */}
+                            <p className="text-gray-300 leading-relaxed mb-2">
+                              {track.description}
                             </p>
+
+                            {/* Genre */}
+                            {track.genre && (
+                              <p className="text-gray-400 text-sm mb-2">
+                                <span className="font-medium">Genre:</span>{" "}
+                                {track.genre}
+                              </p>
+                            )}
+
+                            {/* Tags */}
+                            {track.tags && (
+                              <div className="flex flex-wrap gap-2 mt-2">
+                                {track.tags.split(",").map((tag, index) => (
+                                  <span
+                                    key={index}
+                                    className="px-3 py-1 rounded-full bg-pink-400/10 text-pink-300 text-xs font-medium border border-pink-400/20"
+                                  >
+                                    #{tag.trim()}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
                           </div>
                         </div>
                         <div className="flex items-center space-x-2">
