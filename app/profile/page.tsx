@@ -8,20 +8,29 @@ import {
   Users,
   Heart,
   Play,
+  Trash,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getProfileInfo } from "@/api/getProfileInfo";
 import { Profile } from "@/types/profileType";
+import { BeatByUser } from "@/types/beatType";
+import { getBeatByUser } from "@/api/getBeatByUser";
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<Profile>();
+  const [myBeats, setMyBeats] = useState<BeatByUser[]>();
+  const [beatPage, setBeatPage] = useState(1);
+  const [likedPage, setLikedPage] = useState(1);
+const [totalPages, setTotalPages] = useState<number | undefined>(undefined);
+
   useEffect(() => {
-    const fetchBeats = async () => {
+    //fetch profile information
+    const fetchProfile = async () => {
       try {
         const data = await getProfileInfo();
         setProfile(data);
@@ -30,14 +39,41 @@ export default function ProfilePage() {
       }
     };
 
-    fetchBeats();
-  }, []);
+    fetchProfile();
+  }, [beatPage]);
 
-  const recentTracks = [
-    { id: 1, title: "Midnight Vibes", plays: 1247, likes: 89 },
-    { id: 2, title: "Urban Symphony", plays: 892, likes: 67 },
-    { id: 3, title: "Neon Dreams", plays: 2156, likes: 134 },
+  useEffect(() => {
+    //fetch account owned beats
+    const fetchMyBeats = async () => {
+      try {
+        const response = await getBeatByUser(beatPage);
+        console.log(response.data);
+        setMyBeats(response.data);
+        setTotalPages(response.totalPages);
+      } catch (error) {
+        console.error("Failed to fetch beats:", error);
+      }
+    };
+    fetchMyBeats();
+  }, [beatPage]);
+
+  const likedTracks = [
+    { id: 10, title: "Chill Beats", plays: 778, likes: 55 },
+    { id: 11, title: "Lo-Fi Study", plays: 1842, likes: 145 },
+    { id: 12, title: "Dreamscape", plays: 992, likes: 72 },
   ];
+
+  // const totalLikedPages = Math.ceil(likedTracks.length / pageSizes);
+
+  const handleEdit = (id: string) => {
+    console.log("Edit track:", id);
+    // navigate or open modal to edit
+  };
+
+  const handleDelete = (id: string) => {
+    console.log("Delete track:", id);
+    // API call to delete track
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
@@ -116,7 +152,7 @@ export default function ProfilePage() {
                   </Button>
                   <Button
                     variant="outline"
-                    className="border-white/20 text-white hover:bg-white/10"
+                    className="border-white/20 text-pink-500 hover:bg-white/10"
                   >
                     <Users className="h-4 w-4 mr-2" />
                     Share Profile
@@ -144,8 +180,9 @@ export default function ProfilePage() {
             </TabsTrigger>
           </TabsList>
 
+          {/* My Tracks */}
           <TabsContent value="tracks" className="space-y-4">
-            {recentTracks.map((track) => (
+            {myBeats?.map((track) => (
               <Card
                 key={track.id}
                 className="bg-white/10 backdrop-blur-sm border-white/20"
@@ -164,30 +201,126 @@ export default function ProfilePage() {
                           {track.title}
                         </h4>
                         <p className="text-gray-400 text-sm">
-                          {track.plays} plays
+                          {track.description}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Heart className="h-4 w-4 text-pink-400" />
                       <span className="text-white">{track.likes}</span>
+
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="border-white/20 text-white hover:bg-white/10"
+                        onClick={() => handleEdit(track.id)}
+                      >
+                        <Edit className="h-4 w-4 text-pink-500" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="border-white/20 text-red-400 hover:bg-red-500 hover:text-white"
+                        onClick={() => handleDelete(track.id)}
+                      >
+                        <Trash className="h-4 w-4" />
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
               </Card>
             ))}
+
+            {/* Pagination */}
+            <div className="flex justify-between mt-4">
+              <Button
+                variant="outline"
+                disabled={beatPage === 1}
+                onClick={() => setBeatPage((p) => p - 1)}
+              >
+                Previous
+              </Button>
+              <span className="text-white">
+                Page {beatPage} of {totalPages}
+              </span>
+              <Button
+                variant="outline"
+                disabled={beatPage === totalPages}
+                onClick={() => setBeatPage((p) => p + 1)}
+              >
+                Next
+              </Button>
+            </div>
           </TabsContent>
 
-          <TabsContent value="liked">
-            <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-              <CardContent className="p-8 text-center">
-                <Heart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-400">
-                  Your liked tracks will appear here
-                </p>
-              </CardContent>
-            </Card>
-          </TabsContent>
+          {/* Liked Tracks */}
+          {/* <TabsContent value="liked" className="space-y-4">
+            {paginatedLiked.length > 0 ? (
+              <>
+                {paginatedLiked.map((track) => (
+                  <Card
+                    key={track.id}
+                    className="bg-white/10 backdrop-blur-sm border-white/20"
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4">
+                          <Button
+                            size="sm"
+                            className="rounded-full w-10 h-10 bg-gradient-to-r from-pink-500 to-purple-600"
+                          >
+                            <Play className="h-4 w-4" />
+                          </Button>
+                          <div>
+                            <h4 className="text-white font-semibold">
+                              {track.title}
+                            </h4>
+                            <p className="text-gray-400 text-sm">
+                              {track.plays} plays
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Heart className="h-4 w-4 text-pink-400" />
+                          <span className="text-white">{track.likes}</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+
+                {/* Pagination */}
+          {/* <div className="flex justify-between mt-4">
+                  <Button
+                    variant="outline"
+                    disabled={likedPage === 1}
+                    onClick={() => setLikedPage((p) => p - 1)}
+                  >
+                    Previous
+                  </Button>
+                  <span className="text-white">
+                    Page {likedPage} of {totalLikedPages}
+                  </span>
+                  <Button
+                    variant="outline"
+                    disabled={likedPage === totalLikedPages}
+                    onClick={() => setLikedPage((p) => p + 1)}
+                  >
+                    Next
+                  </Button>
+                </div> */}
+          {/* </>
+            ) : ( */}
+          {/* <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                <CardContent className="p-8 text-center">
+                  <Heart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-400">
+                    Your liked tracks will appear here
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent> */}
         </Tabs>
       </main>
     </div>

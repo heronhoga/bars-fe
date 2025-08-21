@@ -156,7 +156,7 @@ export default function HomePage() {
                 onClick={handleLogout}
                 variant="outline"
                 size="sm"
-                className="border-white/20 text-white hover:bg-red-500/20 hover:border-red-500/30 hover:text-red-400 transition-colors"
+                className="border-white/20 text-red-400 hover:bg-red-500/20 hover:border-red-500/30 hover:text-red-400 transition-colors"
               >
                 <LogOut className="h-4 w-4 mr-2" />
                 <span className="hidden sm:inline">Logout</span>
