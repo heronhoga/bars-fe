@@ -22,6 +22,8 @@ import { Profile } from "@/types/profileType";
 import { BeatByUser } from "@/types/beatType";
 import { getBeatByUser } from "@/api/getBeatByUser";
 import { getLikedBeatByUser } from "@/api/getLikedBeatByUser";
+import { CustomAlert } from "@/components/custom-alert";
+import { AlertState } from "@/types/alertType";
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<Profile>();
@@ -33,6 +35,12 @@ export default function ProfilePage() {
   const [likedTotalPages, setLikedTotalPages] = useState<number>(1);
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
+  const [alert, setAlert] = useState<AlertState>({
+    isOpen: false,
+    type: "success",
+    title: "",
+    message: "",
+  });
 
   //fetch profile information
   useEffect(() => {
@@ -112,6 +120,20 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+      {/* alert */}
+      <CustomAlert
+        isOpen={alert.isOpen}
+        onClose={() => {
+          setAlert((prev) => ({ ...prev, isOpen: false }));
+
+          // if (alert.type === "success") {
+          //   router.push("/home");
+          // }
+        }}
+        type={alert.type}
+        title={alert.title}
+        message={alert.message}
+      />
       {/* Header */}
       <header className="container mx-auto px-4 py-6">
         <nav className="flex items-center justify-between">
