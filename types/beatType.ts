@@ -34,6 +34,20 @@ export interface BeatByUser {
 }
 
 export interface BeatByUserResponse {
-  data: BeatByUser[]
-  totalPages: number
+  data: BeatByUser[];
+  totalPages: number;
+}
+
+export interface BeatUpdate {
+  title: string;
+  description: string;
+  genre: string;
+  tags: string;
+}
+
+export interface BeatUpdateFormErrors {
+  title?: string;
+  description?: string;
+  genre?: string;
+  tags?: string;
 }

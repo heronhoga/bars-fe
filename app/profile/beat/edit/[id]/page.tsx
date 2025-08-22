@@ -19,6 +19,8 @@ import {
 import { useRouter } from "next/navigation";
 import { CustomAlert, type AlertType } from "@/components/custom-alert";
 import { AlertState } from "@/types/alertType";
+import { BeatFull, BeatUpdateFormErrors } from "@/types/beatType";
+import { editBeat } from "@/api/editBeat";
 
 const genres = [
   "Hip-Hop",
@@ -38,38 +40,20 @@ const genres = [
   "Other",
 ];
 
-interface BeatData {
-  id: string;
-  title: string;
-  description: string;
-  genre: string;
-  tags: string;
-  file_url: string;
-  likes: number;
-  created_at: string;
-}
-
-interface FormErrors {
-  title?: string;
-  description?: string;
-  genre?: string;
-  tags?: string;
-}
-
-// Mock API function - replace with your actual API call
 const updateBeat = async (
   id: string,
-  data: Omit<BeatData, "id" | "file_url" | "likes" | "created_at">
+  data: Omit<
+    BeatFull,
+    | "id"
+    | "file_url"
+    | "likes"
+    | "created_at"
+    | "username"
+    | "file_size"
+    | "is_liked"
+  >
 ) => {
-  // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 1500));
-
-  // Simulate success/failure
-  if (Math.random() > 0.1) {
-    return { success: true, message: "Beat updated successfully!" };
-  } else {
-    throw new Error("Failed to update beat");
-  }
+  await editBeat(id, data);
 };
 
 export default function EditBeatPage({
@@ -78,14 +62,14 @@ export default function EditBeatPage({
   params: Promise<{ id: string }>;
 }) {
   const [beatId, setBeatId] = useState<string>("");
-  const [beatData, setBeatData] = useState<BeatData | null>(null);
+  const [beatData, setBeatData] = useState<BeatFull | null>(null);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     genre: "",
     tags: "",
   });
-  const [errors, setErrors] = useState<FormErrors>({});
+  const [errors, setErrors] = useState<BeatUpdateFormErrors>({});
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [alert, setAlert] = useState<AlertState>({
@@ -97,7 +81,6 @@ export default function EditBeatPage({
 
   const router = useRouter();
 
-  // Get the beat ID from params
   useEffect(() => {
     const getParams = async () => {
       const resolvedParams = await params;
@@ -106,7 +89,6 @@ export default function EditBeatPage({
     getParams();
   }, [params]);
 
-  // Fetch beat data when ID is available
   useEffect(() => {
     if (!beatId) return;
 
@@ -138,14 +120,14 @@ export default function EditBeatPage({
   }, [beatId]);
 
   const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
+    const newErrors: BeatUpdateFormErrors = {};
 
     // Title validation
     if (!formData.title.trim()) {
       newErrors.title = "Title is required";
     } else if (formData.title.length < 2) {
       newErrors.title = "Title must be at least 2 characters";
-    } else if (formData.title.length > 100) {
+    } else if (formData.title.length > 20) {
       newErrors.title = "Title must be less than 100 characters";
     }
 
@@ -154,7 +136,7 @@ export default function EditBeatPage({
       newErrors.description = "Description is required";
     } else if (formData.description.length < 10) {
       newErrors.description = "Description must be at least 10 characters";
-    } else if (formData.description.length > 500) {
+    } else if (formData.description.length > 200) {
       newErrors.description = "Description must be less than 500 characters";
     }
 
@@ -177,7 +159,6 @@ export default function EditBeatPage({
   const handleInputChange = (field: keyof typeof formData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
 
-    // Clear error when user starts typing
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
@@ -330,7 +311,7 @@ export default function EditBeatPage({
                   value={formData.title}
                   onChange={(e) => handleInputChange("title", e.target.value)}
                   className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-pink-400"
-                  maxLength={100}
+                  maxLength={20}
                   disabled={isSaving}
                 />
                 <div className="flex justify-between items-center">
@@ -338,7 +319,7 @@ export default function EditBeatPage({
                     <p className="text-red-400 text-sm">{errors.title}</p>
                   )}
                   <p className="text-gray-500 text-xs ml-auto">
-                    {formData.title.length}/100
+                    {formData.title.length}/20
                   </p>
                 </div>
               </div>
@@ -359,7 +340,7 @@ export default function EditBeatPage({
                     handleInputChange("description", e.target.value)
                   }
                   className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-pink-400 min-h-[120px] resize-none"
-                  maxLength={500}
+                  maxLength={200}
                   disabled={isSaving}
                 />
                 <div className="flex justify-between items-center">
@@ -367,7 +348,7 @@ export default function EditBeatPage({
                     <p className="text-red-400 text-sm">{errors.description}</p>
                   )}
                   <p className="text-gray-500 text-xs ml-auto">
-                    {formData.description.length}/500
+                    {formData.description.length}/200
                   </p>
                 </div>
               </div>
