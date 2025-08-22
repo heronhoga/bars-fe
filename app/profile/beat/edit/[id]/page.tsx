@@ -16,9 +16,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CustomAlert, type AlertType } from "@/components/custom-alert";
+import { AlertState } from "@/types/alertType";
 
 const genres = [
   "Hip-Hop",
@@ -55,33 +55,6 @@ interface FormErrors {
   genre?: string;
   tags?: string;
 }
-
-interface AlertState {
-  isOpen: boolean;
-  type: AlertType;
-  title: string;
-  message: string;
-  confirmText?: string;
-}
-
-// Mock API function - replace with your actual API call
-const getBeatById = async (id: string): Promise<BeatData> => {
-  // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  // Mock data - replace with actual API call
-  return {
-    id,
-    title: "Sample Beat Title",
-    description:
-      "This is a sample beat description that explains the vibe and inspiration behind this track.",
-    genre: "Hip-Hop",
-    tags: "chill, trap, melodic, dark",
-    file_url: "/placeholder-audio.mp3",
-    likes: 42,
-    created_at: new Date().toISOString(),
-  };
-};
 
 // Mock API function - replace with your actual API call
 const updateBeat = async (
@@ -140,7 +113,8 @@ export default function EditBeatPage({
     const fetchBeat = async () => {
       setIsLoading(true);
       try {
-        const data = await getBeatById(beatId);
+        const data = JSON.parse(localStorage.getItem("editTrack") || "{}");
+        console.log(data);
         setBeatData(data);
         setFormData({
           title: data.title,
