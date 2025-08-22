@@ -18,7 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getProfileInfo } from "@/api/getProfileInfo";
-import { Profile } from "@/types/profileType";
+import { BeatByProfile, Profile } from "@/types/profileType";
 import { BeatByUser } from "@/types/beatType";
 import { getBeatByUser } from "@/api/getBeatByUser";
 import { getLikedBeatByUser } from "@/api/getLikedBeatByUser";
@@ -52,6 +52,8 @@ export default function ProfilePage() {
     confirmText: "Confirm",
     cancelText: "Cancel",
   });
+
+  const router = useRouter();
 
   //fetch profile information
   useEffect(() => {
@@ -97,9 +99,13 @@ export default function ProfilePage() {
     fetchLikedBeats();
   }, [likedPage]);
 
-  const handleEdit = (id: string) => {
-    console.log("Edit track:", id);
+  //navigate to edit page
+  const handleEdit = (track: BeatByProfile) => {
+    localStorage.setItem("editTrack", JSON.stringify(track));
+    router.push(`/profile/beat/edit/${track.id}`);
   };
+
+  //end navigate to edit page
 
   //linked with confirm pop up
   const handleClose = () => setConfirm((prev) => ({ ...prev, isOpen: false }));
@@ -366,7 +372,7 @@ export default function ProfilePage() {
                         size="sm"
                         variant="outline"
                         className="border-white/20 text-white hover:bg-white/10"
-                        onClick={() => handleEdit(track.id)}
+                        onClick={() => handleEdit(track)}
                       >
                         <Edit className="h-4 w-4 text-pink-500" />
                       </Button>

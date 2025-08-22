@@ -1,18 +1,24 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect } from "react"
-import { ArrowLeft, Save, Music, Loader } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { CustomAlert, type AlertType } from "@/components/custom-alert"
+import { useState, useEffect } from "react";
+import { ArrowLeft, Save, Music, Loader, Ghost } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { CustomAlert, type AlertType } from "@/components/custom-alert";
 
 const genres = [
   "Hip-Hop",
@@ -30,222 +36,240 @@ const genres = [
   "Afrobeat",
   "Latin",
   "Other",
-]
+];
 
 interface BeatData {
-  id: string
-  title: string
-  description: string
-  genre: string
-  tags: string
-  file_url: string
-  likes: number
-  created_at: string
+  id: string;
+  title: string;
+  description: string;
+  genre: string;
+  tags: string;
+  file_url: string;
+  likes: number;
+  created_at: string;
 }
 
 interface FormErrors {
-  title?: string
-  description?: string
-  genre?: string
-  tags?: string
+  title?: string;
+  description?: string;
+  genre?: string;
+  tags?: string;
 }
 
 interface AlertState {
-  isOpen: boolean
-  type: AlertType
-  title: string
-  message: string
-  confirmText?: string
+  isOpen: boolean;
+  type: AlertType;
+  title: string;
+  message: string;
+  confirmText?: string;
 }
 
 // Mock API function - replace with your actual API call
 const getBeatById = async (id: string): Promise<BeatData> => {
   // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 1000))
+  await new Promise((resolve) => setTimeout(resolve, 1000));
 
   // Mock data - replace with actual API call
   return {
     id,
     title: "Sample Beat Title",
-    description: "This is a sample beat description that explains the vibe and inspiration behind this track.",
+    description:
+      "This is a sample beat description that explains the vibe and inspiration behind this track.",
     genre: "Hip-Hop",
     tags: "chill, trap, melodic, dark",
     file_url: "/placeholder-audio.mp3",
     likes: 42,
     created_at: new Date().toISOString(),
-  }
-}
+  };
+};
 
 // Mock API function - replace with your actual API call
-const updateBeat = async (id: string, data: Omit<BeatData, "id" | "file_url" | "likes" | "created_at">) => {
+const updateBeat = async (
+  id: string,
+  data: Omit<BeatData, "id" | "file_url" | "likes" | "created_at">
+) => {
   // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 1500))
+  await new Promise((resolve) => setTimeout(resolve, 1500));
 
   // Simulate success/failure
   if (Math.random() > 0.1) {
-    return { success: true, message: "Beat updated successfully!" }
+    return { success: true, message: "Beat updated successfully!" };
   } else {
-    throw new Error("Failed to update beat")
+    throw new Error("Failed to update beat");
   }
-}
+};
 
-export default function EditBeatPage({ params }: { params: Promise<{ id: string }> }) {
-  const [beatId, setBeatId] = useState<string>("")
-  const [beatData, setBeatData] = useState<BeatData | null>(null)
+export default function EditBeatPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const [beatId, setBeatId] = useState<string>("");
+  const [beatData, setBeatData] = useState<BeatData | null>(null);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     genre: "",
     tags: "",
-  })
-  const [errors, setErrors] = useState<FormErrors>({})
-  const [isLoading, setIsLoading] = useState(true)
-  const [isSaving, setIsSaving] = useState(false)
+  });
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const [alert, setAlert] = useState<AlertState>({
     isOpen: false,
     type: "success",
     title: "",
     message: "",
-  })
+  });
 
-  const router = useRouter()
+  const router = useRouter();
 
   // Get the beat ID from params
   useEffect(() => {
     const getParams = async () => {
-      const resolvedParams = await params
-      setBeatId(resolvedParams.id)
-    }
-    getParams()
-  }, [params])
+      const resolvedParams = await params;
+      setBeatId(resolvedParams.id);
+    };
+    getParams();
+  }, [params]);
 
   // Fetch beat data when ID is available
   useEffect(() => {
-    if (!beatId) return
+    if (!beatId) return;
 
     const fetchBeat = async () => {
-      setIsLoading(true)
+      setIsLoading(true);
       try {
-        const data = await getBeatById(beatId)
-        setBeatData(data)
+        const data = await getBeatById(beatId);
+        setBeatData(data);
         setFormData({
           title: data.title,
           description: data.description,
           genre: data.genre,
           tags: data.tags,
-        })
+        });
       } catch (error) {
-        console.error("Failed to fetch beat:", error)
-        showAlert("error", "Error Loading Beat", "Failed to load beat data. Please try again.")
+        console.error("Failed to fetch beat:", error);
+        showAlert(
+          "error",
+          "Error Loading Beat",
+          "Failed to load beat data. Please try again."
+        );
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
+    };
 
-    fetchBeat()
-  }, [beatId])
+    fetchBeat();
+  }, [beatId]);
 
   const validateForm = (): boolean => {
-    const newErrors: FormErrors = {}
+    const newErrors: FormErrors = {};
 
     // Title validation
     if (!formData.title.trim()) {
-      newErrors.title = "Title is required"
+      newErrors.title = "Title is required";
     } else if (formData.title.length < 2) {
-      newErrors.title = "Title must be at least 2 characters"
+      newErrors.title = "Title must be at least 2 characters";
     } else if (formData.title.length > 100) {
-      newErrors.title = "Title must be less than 100 characters"
+      newErrors.title = "Title must be less than 100 characters";
     }
 
     // Description validation
     if (!formData.description.trim()) {
-      newErrors.description = "Description is required"
+      newErrors.description = "Description is required";
     } else if (formData.description.length < 10) {
-      newErrors.description = "Description must be at least 10 characters"
+      newErrors.description = "Description must be at least 10 characters";
     } else if (formData.description.length > 500) {
-      newErrors.description = "Description must be less than 500 characters"
+      newErrors.description = "Description must be less than 500 characters";
     }
 
     // Genre validation
     if (!formData.genre) {
-      newErrors.genre = "Please select a genre"
+      newErrors.genre = "Please select a genre";
     }
 
     // Tags validation
     if (!formData.tags.trim()) {
-      newErrors.tags = "At least one tag is required"
+      newErrors.tags = "At least one tag is required";
     } else if (formData.tags.length > 200) {
-      newErrors.tags = "Tags must be less than 200 characters"
+      newErrors.tags = "Tags must be less than 200 characters";
     }
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleInputChange = (field: keyof typeof formData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
+    setFormData((prev) => ({ ...prev, [field]: value }));
 
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: undefined }))
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
-  }
+  };
 
-  const showAlert = (type: AlertType, title: string, message: string, confirmText?: string) => {
+  const showAlert = (
+    type: AlertType,
+    title: string,
+    message: string,
+    confirmText?: string
+  ) => {
     setAlert({
       isOpen: true,
       type,
       title,
       message,
       confirmText,
-    })
-  }
+    });
+  };
 
   const handleAlertClose = () => {
-    setAlert((prev) => ({ ...prev, isOpen: false }))
+    setAlert((prev) => ({ ...prev, isOpen: false }));
 
     // If it was a success alert, redirect to profile
     if (alert.type === "success") {
       setTimeout(() => {
-        router.push("/profile")
-      }, 300)
+        router.push("/profile");
+      }, 300);
     }
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!validateForm()) {
-      return
+      return;
     }
 
-    setIsSaving(true)
+    setIsSaving(true);
 
     try {
-      await updateBeat(beatId, formData)
+      await updateBeat(beatId, formData);
 
       showAlert(
         "success",
         "Beat Updated Successfully!",
         "Your beat information has been updated and is now live. The changes will be visible to all users.",
-        "Back to Profile",
-      )
+        "Back to Profile"
+      );
     } catch (error) {
-      console.error("Failed to update beat:", error)
+      console.error("Failed to update beat:", error);
       showAlert(
         "error",
         "Update Failed",
         "We encountered an issue while updating your beat. Please check your connection and try again.",
-        "Try Again",
-      )
+        "Try Again"
+      );
     } finally {
-      setIsSaving(false)
+      setIsSaving(false);
     }
-  }
+  };
 
   const handleCancel = () => {
-    router.push("/profile")
-  }
+    localStorage.removeItem("editTrack");
+    router.push("/profile");
+  };
 
   if (isLoading) {
     return (
@@ -255,7 +279,7 @@ export default function EditBeatPage({ params }: { params: Promise<{ id: string 
           <p className="text-white text-lg">Loading beat data...</p>
         </div>
       </div>
-    )
+    );
   }
 
   if (!beatData) {
@@ -263,17 +287,22 @@ export default function EditBeatPage({ params }: { params: Promise<{ id: string 
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center">
         <Card className="bg-white/10 backdrop-blur-sm border-white/20 max-w-md">
           <CardContent className="p-8 text-center">
-            <h2 className="text-2xl font-bold text-white mb-4">Beat Not Found</h2>
-            <p className="text-gray-300 mb-6">The beat you're trying to edit could not be found.</p>
-            <Link href="/profile">
-              <Button className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700">
-                Back to Profile
-              </Button>
-            </Link>
+            <h2 className="text-2xl font-bold text-white mb-4">
+              Beat Not Found
+            </h2>
+            <p className="text-gray-300 mb-6">
+              The beat you're trying to edit could not be found.
+            </p>
+            <Button
+              onClick={handleCancel}
+              className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
+            >
+              Back to Profile
+            </Button>
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
   return (
@@ -281,13 +310,14 @@ export default function EditBeatPage({ params }: { params: Promise<{ id: string 
       {/* Header */}
       <header className="container mx-auto px-4 py-6">
         <nav className="flex items-center justify-between">
-          <Link
-            href="/profile"
+          <Button
+            variant="ghost"
+            onClick={handleCancel}
             className="inline-flex items-center space-x-2 text-white hover:text-pink-400 transition-colors"
           >
             <ArrowLeft className="h-5 w-5" />
             <span>Back to Profile</span>
-          </Link>
+          </Button>
           <div className="flex items-center space-x-2">
             <Music className="h-8 w-8 text-white" />
             <h1 className="text-2xl font-bold text-white">BARS</h1>
@@ -304,14 +334,19 @@ export default function EditBeatPage({ params }: { params: Promise<{ id: string 
               <Music className="h-8 w-8" />
               <span>Edit Beat</span>
             </CardTitle>
-            <p className="text-gray-300 text-center">Update your beat information</p>
+            <p className="text-gray-300 text-center">
+              Update your beat information
+            </p>
           </CardHeader>
 
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Title */}
               <div className="space-y-2">
-                <Label htmlFor="title" className="text-white text-lg font-semibold">
+                <Label
+                  htmlFor="title"
+                  className="text-white text-lg font-semibold"
+                >
                   Title
                 </Label>
                 <Input
@@ -325,34 +360,50 @@ export default function EditBeatPage({ params }: { params: Promise<{ id: string 
                   disabled={isSaving}
                 />
                 <div className="flex justify-between items-center">
-                  {errors.title && <p className="text-red-400 text-sm">{errors.title}</p>}
-                  <p className="text-gray-500 text-xs ml-auto">{formData.title.length}/100</p>
+                  {errors.title && (
+                    <p className="text-red-400 text-sm">{errors.title}</p>
+                  )}
+                  <p className="text-gray-500 text-xs ml-auto">
+                    {formData.title.length}/100
+                  </p>
                 </div>
               </div>
 
               {/* Description */}
               <div className="space-y-2">
-                <Label htmlFor="description" className="text-white text-lg font-semibold">
+                <Label
+                  htmlFor="description"
+                  className="text-white text-lg font-semibold"
+                >
                   Description
                 </Label>
                 <Textarea
                   id="description"
                   placeholder="Describe your beat, the inspiration behind it, or how it should be used..."
                   value={formData.description}
-                  onChange={(e) => handleInputChange("description", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("description", e.target.value)
+                  }
                   className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-pink-400 min-h-[120px] resize-none"
                   maxLength={500}
                   disabled={isSaving}
                 />
                 <div className="flex justify-between items-center">
-                  {errors.description && <p className="text-red-400 text-sm">{errors.description}</p>}
-                  <p className="text-gray-500 text-xs ml-auto">{formData.description.length}/500</p>
+                  {errors.description && (
+                    <p className="text-red-400 text-sm">{errors.description}</p>
+                  )}
+                  <p className="text-gray-500 text-xs ml-auto">
+                    {formData.description.length}/500
+                  </p>
                 </div>
               </div>
 
               {/* Genre */}
               <div className="space-y-2">
-                <Label htmlFor="genre" className="text-white text-lg font-semibold">
+                <Label
+                  htmlFor="genre"
+                  className="text-white text-lg font-semibold"
+                >
                   Genre
                 </Label>
                 <Select
@@ -365,18 +416,27 @@ export default function EditBeatPage({ params }: { params: Promise<{ id: string 
                   </SelectTrigger>
                   <SelectContent className="bg-gray-900 border-gray-700">
                     {genres.map((genre) => (
-                      <SelectItem key={genre} value={genre} className="text-white hover:bg-gray-800">
+                      <SelectItem
+                        key={genre}
+                        value={genre}
+                        className="text-white hover:bg-gray-800"
+                      >
                         {genre}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.genre && <p className="text-red-400 text-sm">{errors.genre}</p>}
+                {errors.genre && (
+                  <p className="text-red-400 text-sm">{errors.genre}</p>
+                )}
               </div>
 
               {/* Tags */}
               <div className="space-y-2">
-                <Label htmlFor="tags" className="text-white text-lg font-semibold">
+                <Label
+                  htmlFor="tags"
+                  className="text-white text-lg font-semibold"
+                >
                   Tags
                 </Label>
                 <Input
@@ -390,17 +450,24 @@ export default function EditBeatPage({ params }: { params: Promise<{ id: string 
                   disabled={isSaving}
                 />
                 <div className="flex justify-between items-center">
-                  {errors.tags && <p className="text-red-400 text-sm">{errors.tags}</p>}
-                  <p className="text-gray-500 text-xs ml-auto">{formData.tags.length}/200</p>
+                  {errors.tags && (
+                    <p className="text-red-400 text-sm">{errors.tags}</p>
+                  )}
+                  <p className="text-gray-500 text-xs ml-auto">
+                    {formData.tags.length}/200
+                  </p>
                 </div>
                 <p className="text-gray-400 text-xs">
-                  Use tags to help others discover your beat. Separate multiple tags with commas.
+                  Use tags to help others discover your beat. Separate multiple
+                  tags with commas.
                 </p>
               </div>
 
               {/* Beat Info Display */}
               <div className="bg-white/5 rounded-lg p-4 border border-white/10">
-                <h3 className="text-white font-semibold mb-2">Beat Information</h3>
+                <h3 className="text-white font-semibold mb-2">
+                  Beat Information
+                </h3>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <span className="text-gray-400">Likes:</span>
@@ -408,7 +475,9 @@ export default function EditBeatPage({ params }: { params: Promise<{ id: string 
                   </div>
                   <div>
                     <span className="text-gray-400">Created:</span>
-                    <span className="text-white ml-2">{new Date(beatData.created_at).toLocaleDateString()}</span>
+                    <span className="text-white ml-2">
+                      {new Date(beatData.created_at).toLocaleDateString()}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -457,5 +526,5 @@ export default function EditBeatPage({ params }: { params: Promise<{ id: string 
         />
       </main>
     </div>
-  )
+  );
 }
