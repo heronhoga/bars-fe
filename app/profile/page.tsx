@@ -23,7 +23,10 @@ import { BeatByUser } from "@/types/beatType";
 import { getBeatByUser } from "@/api/getBeatByUser";
 import { getLikedBeatByUser } from "@/api/getLikedBeatByUser";
 import { CustomAlert } from "@/components/custom-alert";
-import { AlertState } from "@/types/alertType";
+import { AlertState, ConfirmState } from "@/types/alertType";
+import { useRouter } from "next/navigation";
+import { deleteBeat } from "@/api/deleteBeat";
+import { CustomConfirm } from "@/components/custom-confirm";
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<Profile>();
@@ -40,6 +43,14 @@ export default function ProfilePage() {
     type: "success",
     title: "",
     message: "",
+  });
+  const [confirm, setConfirm] = useState<ConfirmState>({
+    isOpen: false,
+    type: "info",
+    title: "",
+    message: "",
+    confirmText: "Confirm",
+    cancelText: "Cancel",
   });
 
   //fetch profile information
@@ -88,13 +99,60 @@ export default function ProfilePage() {
 
   const handleEdit = (id: string) => {
     console.log("Edit track:", id);
-    // navigate or open modal to edit
   };
 
-  const handleDelete = (id: string) => {
-    console.log("Delete track:", id);
-    // API call to delete track
+  //linked with confirm pop up
+  const handleClose = () => setConfirm((prev) => ({ ...prev, isOpen: false }));
+
+  const deleteData = async (id: string) => {
+    //delete
+    handleClose();
+    const res = await deleteBeat(id);
+
+    if (res.message) {
+      setAlert({
+        isOpen: true,
+        type: "success",
+        title: "Track Deletion Succeed",
+        message: "The track has been successfully deleted",
+      });
+
+      //remove data from array
+      setMyBeats((prev) => (prev ? prev.filter((beat) => beat.id !== id) : []));
+    } else {
+      setAlert({
+        isOpen: true,
+        type: "error",
+        title: "Track Deletion Failed",
+        message: "Failed to the delete the track",
+      });
+    }
   };
+
+  const handleConfirm = async (id: string) => {
+    setConfirm({
+      isOpen: true,
+      type: "error",
+      title: "Delete Item?",
+      message: `Are you sure you want to delete this track?`,
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      onConfirm: () => {
+        deleteData(id);
+        setConfirm({
+          isOpen: false,
+          type: "info",
+          title: "",
+          message: "",
+          confirmText: "Confirm",
+          cancelText: "Cancel",
+        });
+      },
+      onClose: () => handleClose(),
+    });
+  };
+
+  //end linked with confirm pop up
 
   const togglePlay = (id: string, fileUrl: string) => {
     if (audio) {
@@ -120,15 +178,23 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+      {/* confirmation */}
+      <CustomConfirm
+        isOpen={confirm.isOpen}
+        type={confirm.type}
+        title={confirm.title}
+        message={confirm.message}
+        confirmText={confirm.confirmText}
+        cancelText={confirm.cancelText}
+        onConfirm={confirm.onConfirm ?? (() => {})}
+        onClose={confirm.onClose ?? (() => {})}
+      />
+
       {/* alert */}
       <CustomAlert
         isOpen={alert.isOpen}
         onClose={() => {
           setAlert((prev) => ({ ...prev, isOpen: false }));
-
-          // if (alert.type === "success") {
-          //   router.push("/home");
-          // }
         }}
         type={alert.type}
         title={alert.title}
@@ -308,7 +374,7 @@ export default function ProfilePage() {
                         size="sm"
                         variant="outline"
                         className="border-white/20 text-red-400 hover:bg-red-500 hover:text-white"
-                        onClick={() => handleDelete(track.id)}
+                        onClick={() => handleConfirm(track.id)}
                       >
                         <Trash className="h-4 w-4" />
                       </Button>
