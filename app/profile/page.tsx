@@ -27,6 +27,7 @@ import { AlertState, ConfirmState } from "@/types/alertType";
 import { useRouter } from "next/navigation";
 import { deleteBeat } from "@/api/deleteBeat";
 import { CustomConfirm } from "@/components/custom-confirm";
+import { likeBeat } from "@/api/likeBeat";
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<Profile>();
@@ -104,12 +105,12 @@ export default function ProfilePage() {
     localStorage.setItem("editTrack", JSON.stringify(track));
     router.push(`/profile/beat/edit/${track.id}`);
   };
-
   //end navigate to edit page
 
   //linked with confirm pop up
   const handleClose = () => setConfirm((prev) => ({ ...prev, isOpen: false }));
 
+  //delete data
   const deleteData = async (id: string) => {
     //delete
     handleClose();
@@ -135,7 +136,7 @@ export default function ProfilePage() {
     }
   };
 
-  const handleConfirm = async (id: string) => {
+  const handleConfirmDelete = async (id: string) => {
     setConfirm({
       isOpen: true,
       type: "error",
@@ -157,8 +158,56 @@ export default function ProfilePage() {
       onClose: () => handleClose(),
     });
   };
-
   //end linked with confirm pop up
+
+  //unlike liked beats
+  const unlikeBeat = async (id: string) => {
+    handleClose();
+    const res = await likeBeat(id);
+    if (res.message) {
+      setAlert({
+        isOpen: true,
+        type: "success",
+        title: "Track is now unliked",
+        message: "The track has been successfully unliked",
+      });
+
+      //remove data from array
+      setLikedBeats((prev) =>
+        prev ? prev.filter((beat) => beat.id !== id) : []
+      );
+    } else {
+      setAlert({
+        isOpen: true,
+        type: "error",
+        title: "Operation Failed",
+        message: "Failed to the unlike the track",
+      });
+    }
+  };
+  const handleConfirmUnlike = async (id: string) => {
+    setConfirm({
+      isOpen: true,
+      type: "error",
+      title: "Delete Item?",
+      message: `Are you sure you want to unlike this track?`,
+      confirmText: "Unlike",
+      cancelText: "Cancel",
+      onConfirm: () => {
+        unlikeBeat(id);
+        setConfirm({
+          isOpen: false,
+          type: "info",
+          title: "",
+          message: "",
+          confirmText: "Confirm",
+          cancelText: "Cancel",
+        });
+      },
+      onClose: () => handleClose(),
+    });
+  };
+  //end unlike liked beats
 
   const togglePlay = (id: string, fileUrl: string) => {
     if (audio) {
@@ -380,7 +429,7 @@ export default function ProfilePage() {
                         size="sm"
                         variant="outline"
                         className="border-white/20 text-red-400 hover:bg-red-500 hover:text-white"
-                        onClick={() => handleConfirm(track.id)}
+                        onClick={() => handleConfirmDelete(track.id)}
                       >
                         <Trash className="h-4 w-4" />
                       </Button>
@@ -470,8 +519,19 @@ export default function ProfilePage() {
                           </div>
                         </div>
                         <div className="flex items-center space-x-2">
+                          {/* Likes count */}
                           <Heart className="h-4 w-4 text-pink-400" />
                           <span className="text-white">{track.likes}</span>
+
+                          {/* Unlike button */}
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-red-400 hover:text-red-500 hover:bg-red-500/10"
+                            onClick={() => handleConfirmUnlike(track.id)}
+                          >
+                            Unlike
+                          </Button>
                         </div>
                       </div>
                     </CardContent>
