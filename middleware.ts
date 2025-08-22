@@ -13,5 +13,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/home", "/upload", "/profile", "/search"],
+  matcher: ["/home", "/upload", "/profile", "/search", "/profile/beat/edit/:id*"],
 };
