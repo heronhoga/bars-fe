@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { getSearchBeats } from "@/api/getSearchBeats";
 import { BeatFull } from "@/types/beatType";
+import { likeBeat } from "@/api/likeBeat";
 
 export default function SearchPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -40,7 +41,9 @@ export default function SearchPage() {
   }, []);
 
   useEffect(() => {
-    handlePageChange(currentPage);
+    if (searchQuery.trim()) {
+      performSearch(searchQuery, currentPage);
+    }
   }, [currentPage]);
 
   const performSearch = async (query: string, page = 1) => {
@@ -77,7 +80,6 @@ export default function SearchPage() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    performSearch(searchQuery, page);
     window.scrollTo({ top: 300, behavior: "smooth" });
   };
 
@@ -103,19 +105,25 @@ export default function SearchPage() {
     }
   };
 
-  const toggleLike = (id: string) => {
-    setSearchData((prev) => ({
-      ...prev,
-      results: prev.results.map((result) =>
-        result.id === id
-          ? {
-              ...result,
-              is_liked: !result.is_liked,
-              likes: result.is_liked ? result.likes - 1 : result.likes + 1,
-            }
-          : result
-      ),
-    }));
+  const toggleLike = async (id: string) => {
+    const res = await likeBeat(id);
+
+    if (res.message) {
+      setSearchData((prev) =>
+        prev.map((showcase) => {
+          if (showcase.id !== id) return showcase;
+
+          return {
+            ...showcase,
+            is_liked: res.message === "Like added" ? "1" : "0",
+            likes:
+              res.message === "Like added"
+                ? showcase.likes + 1
+                : showcase.likes - 1,
+          };
+        })
+      );
+    }
   };
 
   const clearRecentSearches = () => {
@@ -268,75 +276,89 @@ export default function SearchPage() {
                       key={result.id}
                       className="bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all duration-300 shadow-lg rounded-2xl"
                     >
-                      <CardContent className="p-6">
-                        <div className="flex items-start space-x-4">
-                          <div className="relative flex-shrink-0">
-                            <img
-                              alt={result.title}
-                              className="w-20 h-20 rounded-lg object-cover"
-                            />
-                            <Button
-                              size="sm"
-                              onClick={() =>
-                                togglePlay(result.id, result.file_url)
-                              }
-                              className="absolute inset-0 rounded-lg bg-black/50 hover:bg-black/70 transition-all duration-300 opacity-0 hover:opacity-100 flex items-center justify-center"
+                      <CardContent className="p-6 space-y-4">
+                        {/* demo */}
+                        <Button
+                          size="sm"
+                          onClick={() => togglePlay(result.id, result.file_url)}
+                          className="rounded-full w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
+                        >
+                          {currentlyPlaying === result.id ? (
+                            <Pause className="h-5 w-5" />
+                          ) : (
+                            <Play className="h-5 w-5 ml-0.5" />
+                          )}
+                        </Button>
+                        {/* Title & Description */}
+                        <div>
+                          <h4 className="text-2xl font-bold text-white mb-2">
+                            {result.title}
+                          </h4>
+                          <p className="text-gray-300 leading-relaxed break-words">
+                            {result.description}
+                          </p>
+                        </div>
+                        {/* Username */}
+                        <div className="flex items-center gap-2">
+                          <span className="px-3 py-1 rounded-full bg-white/10 border border-white/20 text-sm font-medium">
+                            <Link
+                              href={`https://discordapp.com/users/${result.discord}`}
+                              className="text-indigo-300 hover:text-indigo-200 transition"
+                              target="_blank"
+                              rel="noopener noreferrer"
                             >
-                              {currentlyPlaying === result.id ? (
-                                <Pause className="h-5 w-5 text-white" />
-                              ) : (
-                                <Play className="h-5 w-5 text-white ml-0.5" />
-                              )}
-                            </Button>
-                          </div>
-
-                          {/* Content */}
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between mb-2">
-                              <div>
-                                <h4 className="text-xl font-bold text-white truncate">
-                                  {result.title}
-                                </h4>
-                                <div className="flex items-center space-x-2 mt-1"></div>
-                              </div>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => toggleLike(result.id)}
-                                className={`${
-                                  result.is_liked
-                                    ? "text-pink-400"
-                                    : "text-gray-400"
-                                } hover:text-pink-400`}
+                              By: {result.username} | Discord: {result.discord}
+                            </Link>
+                          </span>
+                        </div>
+                        {/* Upload date */}
+                        <p className="text-gray-400 text-sm">
+                          Uploaded on{" "}
+                          <span className="font-medium">
+                            {new Date(result.created_at).toLocaleDateString(
+                              "en-US",
+                              {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              }
+                            )}
+                          </span>
+                        </p>
+                        {/* Tags */}
+                        {result.tags && (
+                          <div className="flex flex-wrap gap-2">
+                            {result.tags.split(",").map((tag) => (
+                              <span
+                                key={`${result.id}-${tag.trim()}`}
+                                className="px-3 py-1 rounded-full bg-pink-400/10 text-pink-300 text-xs font-medium border border-pink-400/20"
                               >
-                                <Heart
-                                  className={`h-5 w-5 ${
-                                    result.is_liked ? "fill-current" : ""
-                                  }`}
-                                />
-                              </Button>
-                            </div>
-
-                            <div className="flex items-center space-x-4 text-gray-400 text-sm mb-3">
-                              <span className="px-2 py-1 bg-pink-400/10 text-pink-300 rounded-full text-xs">
-                                #{result.tags}
+                                #{tag.trim()}
                               </span>
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center space-x-2">
-                                <Heart className="h-4 w-4 text-pink-400" />
-                                <span className="text-white text-sm">
-                                  {result.likes}
-                                </span>
-                              </div>
-                              <span className="text-gray-400 text-xs">
-                                {new Date(
-                                  result.created_at
-                                ).toLocaleDateString()}
-                              </span>
-                            </div>
+                            ))}
                           </div>
+                        )}
+                        {/* Actions */}
+                        <div className="flex items-center justify-between pt-4 border-t border-white/10">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => toggleLike(result.id)}
+                            className={`flex items-center space-x-2 ${
+                              result.is_liked
+                                ? "text-pink-400"
+                                : "text-gray-400"
+                            } hover:text-pink-400 transition`}
+                          >
+                            <Heart
+                              className={`h-5 w-5 ${
+                                Boolean(Number(result.is_liked))
+                                  ? "fill-current"
+                                  : ""
+                              }`}
+                            />
+                            <span>{result.likes}</span>
+                          </Button>
                         </div>
                       </CardContent>
                     </Card>
