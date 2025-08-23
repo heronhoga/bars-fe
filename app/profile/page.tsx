@@ -269,9 +269,6 @@ export default function ProfilePage() {
             <Music className="h-8 w-8 text-white" />
             <h1 className="text-2xl font-bold text-white">BARS</h1>
           </div>
-          <Button variant="ghost" className="text-white hover:text-pink-400">
-            <Settings className="h-5 w-5" />
-          </Button>
         </nav>
       </header>
 

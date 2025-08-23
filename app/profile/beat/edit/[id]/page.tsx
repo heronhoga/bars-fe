@@ -21,6 +21,7 @@ import { CustomAlert, type AlertType } from "@/components/custom-alert";
 import { AlertState } from "@/types/alertType";
 import { BeatFull, BeatUpdateFormErrors } from "@/types/beatType";
 import { editBeat } from "@/api/editBeat";
+import Link from "next/link";
 
 const genres = [
   "Hip-Hop",
@@ -248,12 +249,13 @@ export default function EditBeatPage({
             <p className="text-gray-300 mb-6">
               The beat you're trying to edit could not be found.
             </p>
-            <Button
-              onClick={handleCancel}
-              className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
+
+            <Link
+              href="/home"
+              className="inline-flex items-center space-x-2 text-white hover:text-pink-400 transition-colors"
             >
               Back to Profile
-            </Button>
+            </Link>
           </CardContent>
         </Card>
       </div>
@@ -265,14 +267,17 @@ export default function EditBeatPage({
       {/* Header */}
       <header className="container mx-auto px-4 py-6">
         <nav className="flex items-center justify-between">
-          <Button
-            variant="ghost"
-            onClick={handleCancel}
-            className="inline-flex items-center space-x-2 text-white hover:text-pink-400 transition-colors"
-          >
-            <ArrowLeft className="h-5 w-5" />
-            <span>Back to Profile</span>
-          </Button>
+
+            
+            <Link
+              href="/profile"
+              className="inline-flex items-center space-x-2 text-white hover:text-pink-400 transition-colors"
+              onClick={handleCancel}
+            >
+              <ArrowLeft className="h-5 w-5" />
+              <span>Back to Profile</span>
+            </Link>
+
           <div className="flex items-center space-x-2">
             <Music className="h-8 w-8 text-white" />
             <h1 className="text-2xl font-bold text-white">BARS</h1>
