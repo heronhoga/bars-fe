@@ -238,9 +238,9 @@ export default function HomePage() {
                   {/* Tags */}
                   {showcase.tags && (
                     <div className="flex flex-wrap gap-2">
-                      {showcase.tags.split(",").map((tag, index) => (
+                      {showcase.tags.split(",").map((tag) => (
                         <span
-                          key={index}
+                          key={`${showcase.id}-${tag.trim()}`}
                           className="px-3 py-1 rounded-full bg-pink-400/10 text-pink-300 text-xs font-medium border border-pink-400/20"
                         >
                           #{tag.trim()}
@@ -288,7 +288,7 @@ export default function HomePage() {
               </p>
               <Button
                 onClick={() => {
-                  window.location.href = "/home"
+                  window.location.href = "/home";
                 }}
                 className="mt-4 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
               >
