@@ -11,7 +11,7 @@ export interface BeatFull {
   title: string;
   username: string;
   description: string;
-  discord: string
+  discord: string;
   genre: string;
   tags: string;
   file_url: string;
@@ -19,6 +19,12 @@ export interface BeatFull {
   created_at: string;
   likes: number;
   is_liked: string;
+}
+
+export interface BeatSearch {
+  message: string;
+  data: BeatFull[];
+  totalPages: number;
 }
 
 export interface BeatByUser {

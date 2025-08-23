@@ -46,7 +46,7 @@ export default function HomePage() {
         if (pageNum === 1) {
           setShowcases(data);
         } else {
-          setShowcases((prev) => [...prev, ...data]); // append on next pages
+          setShowcases((prev) => [...prev, ...data]);
         }
       }
     } catch (error) {
