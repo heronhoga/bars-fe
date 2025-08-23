@@ -84,8 +84,8 @@ export default function UploadPage() {
       newErrors.title = "Title is required";
     } else if (formData.title.length < 2) {
       newErrors.title = "Title must be at least 2 characters";
-    } else if (formData.title.length > 100) {
-      newErrors.title = "Title must be less than 100 characters";
+    } else if (formData.title.length > 20) {
+      newErrors.title = "Title must be less than 21 characters";
     }
 
     // Description validation
@@ -93,8 +93,8 @@ export default function UploadPage() {
       newErrors.description = "Description is required";
     } else if (formData.description.length < 10) {
       newErrors.description = "Description must be at least 10 characters";
-    } else if (formData.description.length > 500) {
-      newErrors.description = "Description must be less than 500 characters";
+    } else if (formData.description.length > 200) {
+      newErrors.description = "Description must be less than 201 characters";
     }
 
     // Genre validation
@@ -456,14 +456,14 @@ export default function UploadPage() {
                   value={formData.title}
                   onChange={(e) => handleInputChange("title", e.target.value)}
                   className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-pink-400"
-                  maxLength={100}
+                  maxLength={20}
                 />
                 <div className="flex justify-between items-center">
                   {errors.title && (
                     <p className="text-red-400 text-sm">{errors.title}</p>
                   )}
                   <p className="text-gray-500 text-xs ml-auto">
-                    {formData.title.length}/100
+                    {formData.title.length}/20
                   </p>
                 </div>
               </div>
@@ -484,14 +484,14 @@ export default function UploadPage() {
                     handleInputChange("description", e.target.value)
                   }
                   className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-pink-400 min-h-[120px] resize-none"
-                  maxLength={500}
+                  maxLength={200}
                 />
                 <div className="flex justify-between items-center">
                   {errors.description && (
                     <p className="text-red-400 text-sm">{errors.description}</p>
                   )}
                   <p className="text-gray-500 text-xs ml-auto">
-                    {formData.description.length}/500
+                    {formData.description.length}/200
                   </p>
                 </div>
               </div>

@@ -38,11 +38,16 @@ export default function HomePage() {
     setLoading(true);
     try {
       const data = await getAllBeats(pageNum);
+      console.log(data);
 
       if (data.length === 0) {
         setHasMore(false);
       } else {
-        setShowcases((prev) => [...prev, ...data]);
+        if (pageNum === 1) {
+          setShowcases(data);
+        } else {
+          setShowcases((prev) => [...prev, ...data]); // append on next pages
+        }
       }
     } catch (error) {
       console.error("Error loading showcases:", error);
@@ -204,7 +209,7 @@ export default function HomePage() {
                     <h4 className="text-2xl font-bold text-white mb-2">
                       {showcase.title}
                     </h4>
-                    <p className="text-gray-300 leading-relaxed">
+                    <p className="text-gray-300 leading-relaxed break-words">
                       {showcase.description}
                     </p>
                   </div>
@@ -212,12 +217,12 @@ export default function HomePage() {
                   <div className="flex items-center gap-2">
                     <span className="px-3 py-1 rounded-full bg-white/10 border border-white/20 text-sm font-medium">
                       <Link
-                        href={`https://discordapp.com/users/${showcase.username}`}
+                        href={`https://discordapp.com/users/${showcase.discord}`}
                         className="text-indigo-300 hover:text-indigo-200 transition"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        {showcase.username}
+                        By: {showcase.username} | Discord: {showcase.discord}
                       </Link>
                     </span>
                   </div>

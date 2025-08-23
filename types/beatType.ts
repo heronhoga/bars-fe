@@ -11,6 +11,7 @@ export interface BeatFull {
   title: string;
   username: string;
   description: string;
+  discord: string
   genre: string;
   tags: string;
   file_url: string;

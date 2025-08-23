@@ -52,6 +52,7 @@ const updateBeat = async (
     | "username"
     | "file_size"
     | "is_liked"
+    | "discord"
   >
 ) => {
   await editBeat(id, data);
