@@ -383,9 +383,11 @@ export default function ProfilePage() {
                         </h4>
 
                         {/* Description */}
-                        <p className="text-gray-300 leading-relaxed mb-2">
-                          {track.description}
-                        </p>
+                        <div className="max-w-full overflow-hidden">
+                          <p className="text-gray-300 leading-relaxed mb-2 break-all whitespace-pre-wrap mr-2">
+                            {track.description}
+                          </p>
+                        </div>
 
                         {/* Genre */}
                         {track.genre && (
@@ -488,9 +490,11 @@ export default function ProfilePage() {
                             </h4>
 
                             {/* Description */}
-                            <p className="text-gray-300 leading-relaxed mb-2">
-                              {track.description}
-                            </p>
+                            <div className="max-w-full overflow-hidden">
+                              <p className="text-gray-300 leading-relaxed mb-2 break-all whitespace-pre-wrap mr-2">
+                                {track.description}
+                              </p>
+                            </div>
 
                             {/* Genre */}
                             {track.genre && (
