@@ -320,7 +320,7 @@ export default function ProfilePage() {
                   </div>
                 </div>
 
-                <div className="flex justify-center md:justify-start space-x-4">
+                {/* <div className="flex justify-center md:justify-start space-x-4">
                   <Button className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700">
                     <Edit className="h-4 w-4 mr-2" />
                     Edit Profile
@@ -332,7 +332,7 @@ export default function ProfilePage() {
                     <Users className="h-4 w-4 mr-2" />
                     Share Profile
                   </Button>
-                </div>
+                </div> */}
               </div>
             </div>
           </CardContent>
