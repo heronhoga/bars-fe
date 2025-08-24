@@ -99,13 +99,13 @@ export default function BarsLanding() {
           </p>
         </div>
 
-        <div className="grid gap-6 max-w-4xl mx-auto">
+        <div className="space-y-8 max-w-2xl mx-auto">
           {beats.map((track) => (
             <Card
               key={track.id}
-              className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300"
+              className="bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all duration-300 shadow-lg rounded-2xl"
             >
-              <CardContent className="p-6">
+              <CardContent className="p-6 space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <Button

@@ -355,221 +355,211 @@ export default function ProfilePage() {
           </TabsList>
 
           {/* My Tracks */}
-          <TabsContent value="tracks" className="space-y-4">
-            {myBeats?.map((track) => (
-              <Card
-                key={track.id}
-                className="bg-white/10 backdrop-blur-sm border-white/20"
-              >
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <Button
-                        size="sm"
-                        onClick={() => togglePlay(track.id, track.file_url)}
-                        className="rounded-full w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
-                      >
-                        {currentlyPlaying === track.id ? (
-                          <Pause className="h-5 w-5" />
-                        ) : (
-                          <Play className="h-5 w-5 ml-0.5" />
-                        )}
-                      </Button>
-                      <div>
-                        {/* Title */}
-                        <h4 className="text-2xl font-bold text-white mb-2">
-                          {track.title}
-                        </h4>
+<TabsContent value="tracks" className="space-y-4">
+  {myBeats?.map((track) => (
+    <Card
+      key={track.id}
+      className="bg-white/10 backdrop-blur-sm border-white/20 w-full"
+    >
+      <CardContent className="p-4">
+        {/* Make it stack on mobile, row on larger screens */}
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+          {/* Left section: Play button + info */}
+          <div className="flex items-start gap-4 flex-1 min-w-0">
+            <Button
+              size="sm"
+              onClick={() => togglePlay(track.id, track.file_url)}
+              className="rounded-full w-12 h-12 shrink-0 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
+            >
+              {currentlyPlaying === track.id ? (
+                <Pause className="h-5 w-5" />
+              ) : (
+                <Play className="h-5 w-5 ml-0.5" />
+              )}
+            </Button>
+            <div className="min-w-0">
+              {/* Title */}
+              <h4 className="text-lg sm:text-2xl font-bold text-white mb-1 truncate">
+                {track.title}
+              </h4>
 
-                        {/* Description */}
-                        <div className="max-w-full overflow-hidden">
-                          <p className="text-gray-300 leading-relaxed mb-2 break-all whitespace-pre-wrap mr-2">
-                            {track.description}
-                          </p>
-                        </div>
+              {/* Description */}
+              <p className="text-gray-300 leading-relaxed mb-2 break-words whitespace-pre-wrap">
+                {track.description}
+              </p>
 
-                        {/* Genre */}
-                        {track.genre && (
-                          <p className="text-gray-400 text-sm mb-2">
-                            <span className="font-medium">Genre:</span>{" "}
-                            {track.genre}
-                          </p>
-                        )}
+              {/* Genre */}
+              {track.genre && (
+                <p className="text-gray-400 text-sm mb-2">
+                  <span className="font-medium">Genre:</span> {track.genre}
+                </p>
+              )}
 
-                        {/* Tags */}
-                        {track.tags && (
-                          <div className="flex flex-wrap gap-2 mt-2">
-                            {track.tags.split(",").map((tag, index) => (
-                              <span
-                                key={index}
-                                className="px-3 py-1 rounded-full bg-pink-400/10 text-pink-300 text-xs font-medium border border-pink-400/20"
-                              >
-                                #{tag.trim()}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Heart className="h-4 w-4 text-pink-400" />
-                      <span className="text-white">{track.likes}</span>
-
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="border-white/20 text-white hover:bg-white/10"
-                        onClick={() => handleEdit(track)}
-                      >
-                        <Edit className="h-4 w-4 text-pink-500" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="border-white/20 text-red-400 hover:bg-red-500 hover:text-white"
-                        onClick={() => handleConfirmDelete(track.id)}
-                      >
-                        <Trash className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-
-            {/* Pagination */}
-            <div className="flex justify-between mt-4">
-              <Button
-                variant="outline"
-                disabled={beatPage === 1}
-                onClick={() => setBeatPage((p) => p - 1)}
-              >
-                Previous
-              </Button>
-              <span className="text-white">
-                Page {beatPage} of {totalPages}
-              </span>
-              <Button
-                variant="outline"
-                disabled={beatPage === totalPages}
-                onClick={() => setBeatPage((p) => p + 1)}
-              >
-                Next
-              </Button>
-            </div>
-          </TabsContent>
-
-          {/* Liked Tracks */}
-          <TabsContent value="liked" className="space-y-4">
-            {likedTotalPages > 0 ? (
-              <>
-                {likedBeats?.map((track) => (
-                  <Card
-                    key={track.id}
-                    className="bg-white/10 backdrop-blur-sm border-white/20"
-                  >
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                          <Button
-                            size="sm"
-                            onClick={() => togglePlay(track.id, track.file_url)}
-                            className="rounded-full w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
-                          >
-                            {currentlyPlaying === track.id ? (
-                              <Pause className="h-5 w-5" />
-                            ) : (
-                              <Play className="h-5 w-5 ml-0.5" />
-                            )}
-                          </Button>
-                          <div>
-                            {/* Title */}
-                            <h4 className="text-2xl font-bold text-white mb-2">
-                              {track.title}
-                            </h4>
-
-                            {/* Description */}
-                            <div className="max-w-full overflow-hidden">
-                              <p className="text-gray-300 leading-relaxed mb-2 break-all whitespace-pre-wrap mr-2">
-                                {track.description}
-                              </p>
-                            </div>
-
-                            {/* Genre */}
-                            {track.genre && (
-                              <p className="text-gray-400 text-sm mb-2">
-                                <span className="font-medium">Genre:</span>{" "}
-                                {track.genre}
-                              </p>
-                            )}
-
-                            {/* Tags */}
-                            {track.tags && (
-                              <div className="flex flex-wrap gap-2 mt-2">
-                                {track.tags.split(",").map((tag, index) => (
-                                  <span
-                                    key={index}
-                                    className="px-3 py-1 rounded-full bg-pink-400/10 text-pink-300 text-xs font-medium border border-pink-400/20"
-                                  >
-                                    #{tag.trim()}
-                                  </span>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          {/* Likes count */}
-                          <Heart className="h-4 w-4 text-pink-400" />
-                          <span className="text-white">{track.likes}</span>
-
-                          {/* Unlike button */}
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="text-red-400 hover:text-red-500 hover:bg-red-500/10"
-                            onClick={() => handleConfirmUnlike(track.id)}
-                          >
-                            Unlike
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-
-                {/* Pagination */}
-                <div className="flex justify-between mt-4">
-                  <Button
-                    variant="outline"
-                    disabled={likedPage === 1}
-                    onClick={() => setLikedPage((p) => p - 1)}
-                  >
-                    Previous
-                  </Button>
-                  <span className="text-white">
-                    Page {likedPage} of {likedTotalPages}
-                  </span>
-                  <Button
-                    variant="outline"
-                    disabled={likedPage === likedTotalPages}
-                    onClick={() => setLikedPage((p) => p + 1)}
-                  >
-                    Next
-                  </Button>
+              {/* Tags */}
+              {track.tags && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {track.tags.split(",").map((tag, index) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1 rounded-full bg-pink-400/10 text-pink-300 text-xs font-medium border border-pink-400/20 max-w-[120px] truncate"
+                    >
+                      #{tag.trim()}
+                    </span>
+                  ))}
                 </div>
-              </>
-            ) : (
-              <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                <CardContent className="p-8 text-center">
-                  <Heart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-400">
-                    Your liked tracks will appear here
+              )}
+            </div>
+          </div>
+
+          {/* Right section: Actions */}
+          <div className="flex items-center gap-2 shrink-0">
+            <Heart className="h-4 w-4 text-pink-400" />
+            <span className="text-white">{track.likes}</span>
+
+            <Button
+              size="sm"
+              variant="outline"
+              className="border-white/20 text-white hover:bg-white/10"
+              onClick={() => handleEdit(track)}
+            >
+              <Edit className="h-4 w-4 text-pink-500" />
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              className="border-white/20 text-red-400 hover:bg-red-500 hover:text-white"
+              onClick={() => handleConfirmDelete(track.id)}
+            >
+              <Trash className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  ))}
+
+  {/* Pagination */}
+  <div className="flex justify-between mt-4">
+    <Button
+      variant="outline"
+      disabled={beatPage === 1}
+      onClick={() => setBeatPage((p) => p - 1)}
+    >
+      Previous
+    </Button>
+    <span className="text-white">
+      Page {beatPage} of {totalPages}
+    </span>
+    <Button
+      variant="outline"
+      disabled={beatPage === totalPages}
+      onClick={() => setBeatPage((p) => p + 1)}
+    >
+      Next
+    </Button>
+  </div>
+</TabsContent>
+
+{/* Liked Tracks */}
+<TabsContent value="liked" className="space-y-4">
+  {likedTotalPages > 0 ? (
+    <>
+      {likedBeats?.map((track) => (
+        <Card
+          key={track.id}
+          className="bg-white/10 backdrop-blur-sm border-white/20 w-full"
+        >
+          <CardContent className="p-4">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+              {/* Left */}
+              <div className="flex items-start gap-4 flex-1 min-w-0">
+                <Button
+                  size="sm"
+                  onClick={() => togglePlay(track.id, track.file_url)}
+                  className="rounded-full w-12 h-12 shrink-0 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
+                >
+                  {currentlyPlaying === track.id ? (
+                    <Pause className="h-5 w-5" />
+                  ) : (
+                    <Play className="h-5 w-5 ml-0.5" />
+                  )}
+                </Button>
+                <div className="min-w-0">
+                  <h4 className="text-lg sm:text-2xl font-bold text-white mb-1 truncate">
+                    {track.title}
+                  </h4>
+                  <p className="text-gray-300 leading-relaxed mb-2 break-words whitespace-pre-wrap">
+                    {track.description}
                   </p>
-                </CardContent>
-              </Card>
-            )}
-          </TabsContent>
+                  {track.genre && (
+                    <p className="text-gray-400 text-sm mb-2">
+                      <span className="font-medium">Genre:</span> {track.genre}
+                    </p>
+                  )}
+                  {track.tags && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {track.tags.split(",").map((tag, index) => (
+                        <span
+                          key={index}
+                          className="px-3 py-1 rounded-full bg-pink-400/10 text-pink-300 text-xs font-medium border border-pink-400/20 max-w-[120px] truncate"
+                        >
+                          #{tag.trim()}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Right */}
+              <div className="flex items-center gap-2 shrink-0">
+                <Heart className="h-4 w-4 text-pink-400" />
+                <span className="text-white">{track.likes}</span>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="text-red-400 hover:text-red-500 hover:bg-red-500/10"
+                  onClick={() => handleConfirmUnlike(track.id)}
+                >
+                  Unlike
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+
+      {/* Pagination */}
+      <div className="flex justify-between mt-4">
+        <Button
+          variant="outline"
+          disabled={likedPage === 1}
+          onClick={() => setLikedPage((p) => p - 1)}
+        >
+          Previous
+        </Button>
+        <span className="text-white">
+          Page {likedPage} of {likedTotalPages}
+        </span>
+        <Button
+          variant="outline"
+          disabled={likedPage === likedTotalPages}
+          onClick={() => setLikedPage((p) => p + 1)}
+        >
+          Next
+        </Button>
+      </div>
+    </>
+  ) : (
+    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+      <CardContent className="p-8 text-center">
+        <Heart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+        <p className="text-gray-400">Your liked tracks will appear here</p>
+      </CardContent>
+    </Card>
+  )}
+</TabsContent>
+
         </Tabs>
       </main>
     </div>
