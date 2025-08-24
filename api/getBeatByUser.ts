@@ -21,8 +21,6 @@ export async function getBeatByUser(page: number): Promise<BeatByUserResponse> {
 
     const result = await res.json();
 
-    console.log(result.data);
-
     return result as BeatByUserResponse;
   } catch (error) {
     console.error("Network or parsing error:", error);

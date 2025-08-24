@@ -38,7 +38,6 @@ export default function HomePage() {
     setLoading(true);
     try {
       const data = await getAllBeats(pageNum);
-      console.log(data);
 
       if (data.length === 0) {
         setHasMore(false);

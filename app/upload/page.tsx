@@ -259,8 +259,6 @@ export default function UploadPage() {
 
       const res = await createNewBeat(uploadData);
 
-      console.log(res);
-
       if (res.message == "New Beat successfully created") {
         showAlert(
           "success",

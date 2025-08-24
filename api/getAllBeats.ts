@@ -21,7 +21,6 @@ export async function getAllBeats(pageNum: number): Promise<BeatFull[]> {
     }
 
     const result = await res.json();
-    console.log(result)
 
     if (!Array.isArray(result.data)) {
       throw new Error("Invalid response format");

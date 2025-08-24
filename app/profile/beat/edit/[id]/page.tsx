@@ -98,7 +98,6 @@ export default function EditBeatPage({
       setIsLoading(true);
       try {
         const data = JSON.parse(localStorage.getItem("editTrack") || "{}");
-        console.log(data);
         setBeatData(data);
         setFormData({
           title: data.title,

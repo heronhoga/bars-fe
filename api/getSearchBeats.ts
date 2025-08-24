@@ -8,7 +8,6 @@ export async function getSearchBeats(
 ): Promise<BeatSearch> {
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/beat?page=${pageNum}&title=${query}&artist=${query}`;
 
-  console.log("query in function: ", query);
   const token = (await cookies()).get("token")?.value;
   try {
     const res = await fetch(url, {

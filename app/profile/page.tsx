@@ -89,7 +89,6 @@ export default function ProfilePage() {
     const fetchLikedBeats = async () => {
       try {
         const response = await getLikedBeatByUser(likedPage);
-        console.log(response.data);
         setLikedBeats(response.data);
         setLikedTotalPages(response.totalPages);
       } catch (error) {

@@ -2,7 +2,9 @@
 import { BeatByUserResponse } from "@/types/beatType";
 import { cookies } from "next/headers";
 
-export async function getLikedBeatByUser(page: number): Promise<BeatByUserResponse> {
+export async function getLikedBeatByUser(
+  page: number
+): Promise<BeatByUserResponse> {
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/likedbyuser?page=${page}`;
   const token = (await cookies()).get("token")?.value;
   try {
@@ -20,8 +22,6 @@ export async function getLikedBeatByUser(page: number): Promise<BeatByUserRespon
     }
 
     const result = await res.json();
-
-    console.log(result.data);
 
     return result as BeatByUserResponse;
   } catch (error) {
