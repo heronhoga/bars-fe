@@ -3,13 +3,12 @@
 import {
   Music,
   ArrowLeft,
-  Settings,
   Edit,
-  Users,
   Heart,
   Play,
   Trash,
   Pause,
+  Download
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -362,9 +361,7 @@ export default function ProfilePage() {
       className="bg-white/10 backdrop-blur-sm border-white/20 w-full"
     >
       <CardContent className="p-4">
-        {/* Make it stack on mobile, row on larger screens */}
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-          {/* Left section: Play button + info */}
           <div className="flex items-start gap-4 flex-1 min-w-0">
             <Button
               size="sm"
@@ -432,6 +429,23 @@ export default function ProfilePage() {
             >
               <Trash className="h-4 w-4" />
             </Button>
+
+                                {/* Download button */}
+                    <a
+                      href={track.file_url}
+                      download
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center space-x-2 text-gray-400 hover:text-indigo-400 transition"
+                      >
+                        <Download className="h-5 w-5" />
+                        <span>Download</span>
+                      </Button>
+                    </a>
           </div>
         </div>
       </CardContent>
@@ -523,6 +537,22 @@ export default function ProfilePage() {
                 >
                   Unlike
                 </Button>
+                                    {/* Download button */}
+                    <a
+                      href={track.file_url}
+                      download
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center space-x-2 text-gray-400 hover:text-indigo-400 transition"
+                      >
+                        <Download className="h-5 w-5" />
+                        <span>Download</span>
+                      </Button>
+                    </a>
               </div>
             </div>
           </CardContent>

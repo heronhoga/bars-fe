@@ -13,6 +13,7 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
+  Download
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -359,6 +360,22 @@ export default function SearchPage() {
                             />
                             <span>{result.likes}</span>
                           </Button>
+                          {/* Download button */}
+                          <a
+                            href={result.file_url}
+                            download
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="flex items-center space-x-2 text-gray-400 hover:text-indigo-400 transition"
+                            >
+                              <Download className="h-5 w-5" />
+                              <span>Download</span>
+                            </Button>
+                          </a>
                         </div>
                       </CardContent>
                     </Card>
