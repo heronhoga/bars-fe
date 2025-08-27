@@ -120,7 +120,7 @@ export default function HomePage() {
   };
 
   const handleLogout = async () => {
-    await fetch("/api/logout", { method: "POST" });
+    await fetch("/function/logout", { method: "POST" });
     window.location.href = "/";
   };
 
