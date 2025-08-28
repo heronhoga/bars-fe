@@ -1,17 +1,42 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Play, Pause, Heart, Users, Music, Headphones } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { getFavoriteBeats } from "@/api/getFavoriteBeats";
 import Link from "next/link";
 import { Beat } from "@/types/beatType";
+import { usePathname } from "next/navigation";
 
 export default function BarsLanding() {
   const [beats, setBeats] = useState<Beat[]>([]);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
-  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+  // const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+
+  //stop music when navigate to other pages
+  const pathname = usePathname();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current = null;
+    }
+    setCurrentlyPlaying(null);
+  }, [pathname]);
+
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+        audioRef.current = null;
+      }
+    };
+  }, []);
+  //end stop music when navigate to other pages
 
   useEffect(() => {
     const fetchBeats = async () => {
@@ -27,23 +52,23 @@ export default function BarsLanding() {
   }, []);
 
   const togglePlay = (id: string, fileUrl: string) => {
-    if (audio) {
-      audio.pause();
-      audio.currentTime = 0;
-      setAudio(null);
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current = null;
       setCurrentlyPlaying(null);
     }
 
     if (currentlyPlaying !== id) {
       const newAudio = new Audio(fileUrl);
+      audioRef.current = newAudio;
       newAudio.play();
 
       newAudio.onended = () => {
         setCurrentlyPlaying(null);
-        setAudio(null);
+        audioRef.current = null;
       };
 
-      setAudio(newAudio);
       setCurrentlyPlaying(id);
     }
   };

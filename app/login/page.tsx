@@ -49,7 +49,7 @@ export default function LoginPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleInputChange = (field: keyof FormData, value: string) => {
+  const handleInputChange = (field: keyof LoginFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
 
     if (errors[field]) {
@@ -209,14 +209,14 @@ export default function LoginPage() {
               </div>
 
               {/* Forgot Password Link */}
-              <div className="text-right">
+              {/* <div className="text-right">
                 <Link
                   href="/forgot-password"
                   className="text-sm text-gray-400 hover:text-pink-400 transition-colors"
                 >
                   Forgot your password?
                 </Link>
-              </div>
+              </div> */}
 
               {/* Submit Button */}
               <Button
