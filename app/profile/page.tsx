@@ -154,6 +154,9 @@ export default function ProfilePage() {
 
       //remove data from array
       setMyBeats((prev) => (prev ? prev.filter((beat) => beat.id !== id) : []));
+      setProfile((prev) =>
+        prev ? { ...prev, tracks: prev.tracks - 1 } : prev
+      );
     } else {
       setAlert({
         isOpen: true,
