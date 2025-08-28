@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   Play,
   Pause,
@@ -20,6 +20,7 @@ import Link from "next/link";
 import { BeatFull } from "@/types/beatType";
 import { getAllBeats } from "@/api/getAllBeats";
 import { likeBeat } from "@/api/likeBeat";
+import { usePathname } from "next/navigation";
 
 export default function HomePage() {
   const [showcases, setShowcases] = useState<BeatFull[]>([]);
@@ -28,7 +29,31 @@ export default function HomePage() {
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
 
-  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+  // const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+
+  //stop music when navigate to other pages
+  const pathname = usePathname();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current = null;
+    }
+    setCurrentlyPlaying(null);
+  }, [pathname]);
+
+    useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+        audioRef.current = null;
+      }
+    };
+  }, []);
+  //end stop music when navigate to other pages
 
   // Load initial data
   useEffect(() => {
@@ -77,23 +102,23 @@ export default function HomePage() {
   }, [handleScroll]);
 
   const togglePlay = (id: string, fileUrl: string) => {
-    if (audio) {
-      audio.pause();
-      audio.currentTime = 0;
-      setAudio(null);
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current = null;
       setCurrentlyPlaying(null);
     }
 
     if (currentlyPlaying !== id) {
       const newAudio = new Audio(fileUrl);
+      audioRef.current = newAudio;
       newAudio.play();
 
       newAudio.onended = () => {
         setCurrentlyPlaying(null);
-        setAudio(null);
+        audioRef.current = null;
       };
 
-      setAudio(newAudio);
       setCurrentlyPlaying(id);
     }
   };

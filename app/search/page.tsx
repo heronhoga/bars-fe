@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Search,
   Play,
@@ -13,7 +13,7 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
-  Download
+  Download,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -22,6 +22,7 @@ import Link from "next/link";
 import { getSearchBeats } from "@/api/getSearchBeats";
 import { BeatFull } from "@/types/beatType";
 import { likeBeat } from "@/api/likeBeat";
+import { usePathname } from "next/navigation";
 
 export default function SearchPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -30,9 +31,32 @@ export default function SearchPage() {
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
-  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+
+  //stop music when navigate to other pages
+  const pathname = usePathname();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current = null;
+    }
+    setCurrentlyPlaying(null);
+  }, [pathname]);
+
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+        audioRef.current = null;
+      }
+    };
+  }, []);
+  //end stop music when navigate to other pages
 
   useEffect(() => {
     const saved = localStorage.getItem("recentSearches");
@@ -85,23 +109,23 @@ export default function SearchPage() {
   };
 
   const togglePlay = (id: string, fileUrl: string) => {
-    if (audio) {
-      audio.pause();
-      audio.currentTime = 0;
-      setAudio(null);
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current = null;
       setCurrentlyPlaying(null);
     }
 
     if (currentlyPlaying !== id) {
       const newAudio = new Audio(fileUrl);
+      audioRef.current = newAudio;
       newAudio.play();
 
       newAudio.onended = () => {
         setCurrentlyPlaying(null);
-        setAudio(null);
+        audioRef.current = null;
       };
 
-      setAudio(newAudio);
       setCurrentlyPlaying(id);
     }
   };

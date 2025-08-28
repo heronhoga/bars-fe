@@ -183,7 +183,6 @@ export default function EditBeatPage({
   const handleAlertClose = () => {
     setAlert((prev) => ({ ...prev, isOpen: false }));
 
-    // If it was a success alert, redirect to profile
     if (alert.type === "success") {
       setTimeout(() => {
         router.push("/profile");
@@ -282,7 +281,7 @@ export default function EditBeatPage({
             <Music className="h-8 w-8 text-white" />
             <h1 className="text-2xl font-bold text-white">BARS</h1>
           </div>
-          <div className="w-24"></div> {/* Spacer for centering */}
+          <div className="w-24"></div>
         </nav>
       </header>
 

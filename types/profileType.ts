@@ -1,4 +1,5 @@
 export interface Profile {
+    id: string
     username: string
     region : string
     discord: string
@@ -15,4 +16,18 @@ export interface BeatByProfile {
     id: string,
     tags: string,
     title: string,
+}
+
+export interface EditProfileFormData {
+  id?: string;
+  username?: string;
+  region?: string;
+  discord?: string;
+}
+
+export interface EditProfileFormErrors {
+  id?: string;
+  username?: string;
+  region?: string;
+  discord?: string;
 }

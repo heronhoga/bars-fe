@@ -348,7 +348,7 @@ export default function RegisterPage() {
                 <Input
                   id="discord"
                   type="text"
-                  placeholder="your_discord_username"
+                  placeholder="your discord username"
                   value={formData.discord}
                   onChange={(e: any) =>
                     handleInputChange("discord", e.target.value)
